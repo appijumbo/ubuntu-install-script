@@ -1,144 +1,149 @@
 #!/bin/bash
+clear
 
-echo -e "****************************************\n
-This is intended for Ubuntu based distros\n
-********************************************\n"
+# Global variables
+UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
+UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null
 
-DISTRO_=$(cat /usr/lib/os-release | grep -E "^NAME=" | cut -d'=' -f2)
-distro_type="${DISTRO_%\"}"         # remove leading quote
-distro_type="${distro_type#\"}"     # remove trailing quote
-echo -e "###### ---> This distro is $distro_type\n"
+
+check_if_distro_is_ubuntu () {
+if [ ! $(which apt) ]
+    then
+        clear
+        echo -e "******************************************************\n"
+        echo -e "This is intended for Ubuntu based distros\n"
+        echo -e "no apt present so assume this is not an Ubuntu base\n"
+        echo -e "will exit in a few seconds......\n"
+        echo -e "******************************************************\n"
+        sleep 6
+        exit 2
+fi
+}
+
+
+get_distro_name () {
+    #   Instead of grepping via the output from a pipe ie
+    #   cat /usr/lib/os-release | grep -E "^NAME=" etc..
+    #   'grep' against a pattern and a location, hence
+    DISTRO_NAME="$(grep ^NAME /etc/os-release | cut -d'=' -f2)"
+    distro_name="${DISTRO_NAME%\"}"     # remove leading quote
+    distro_name="${distro_name#\"}"     # remove trailing quote
+    printf "******************************************************\n"
+    printf "*\n* This distro is $distro_name\n*\n"
+}
+
 
 # Check system is up to date
-sudo apt -y update && sudo apt -y upgrade
+update_n_refresh () {
+    printf "******************************************************\n"
+    printf "*\n* Checking up-to-date\n"
+        if [ $distro_type = "KDE neon" ]
+            then $UPDATE_NEON
+            else $UPDATE_UBUNTU
+        fi
 
-# Neon specific
-if [ $distro_type = "KDE neon" ];then pkcon refresh && pkcon update;fi
+    # check if reboot is required
+    FILE="/var/run/reboot-required"    
+        if [ -f $FILE ]
+            then 
+                echo "Just updated and upgraded REEBOOT REQUIRED !" && exit 1
+        fi
+}
 
 
-# check if reebot is required
-FILE="/var/run/reboot-required"    
-if [ -f $FILE ]; then
-   echo "Just updated and upgraded REEBOOT REQUIRED !" && exit 1
-fi
 
 
-#####################################################################
 # Traditional apt installs
-# ########################
-# 
-#
-sudo apt -y update 
-sudo apt install kate yakuake tomboy falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer -yy
+apt_installs () {
+    sudo apt install ttf-mscorefonts-installer gufw kate yakuake tomboy falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer -yy
+}
 
 
 
 
-# Ubuntu general
-sudo apt -y update && sudo apt upgrade
 
-# Neon specific
-pkcon refresh && pkcon update
-
-# check if reebot is required
-FILE="/var/run/reboot-required"    
-if [ -f $FILE ]; then
-   echo "REEBOOT REQUIRED !" && exit 1
-fi
-
-
-
-#####################################################################
 # Ensure Snap and Flatpak tools are installed
-# ###########################################
-#
-#
-if [$(which snap)!="/usr/bin/snap"]; then
-    sudo apt update
-    sudo apt -y install snapd
-    sudo apt -y upgrade
-fi
+ensure_snapd_flatpak_installed () {
+    if [ ! $(which snap) ]; then
+        sudo apt update
+        sudo apt -y install snapd
+    fi
 
-if [$(which flatpak)!="/usr/bin/flatpak"]; then
-    sudo add-apt-repository ppa:alexlarsson/flatpak
-    sudo apt -y update
-    sudo apt -y install flatpak
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-fi
+    if [ ! $(which flatpak) ]; then
+        sudo add-apt-repository ppa:alexlarsson/flatpak
+        sudo apt -y update
+        sudo apt -y install flatpak
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    fi
+}
 
 
 
-#####################################################################
+
+install_many_snaps () {
 # Install Snap's
-# ##############
-#
-# Although we can install Snap eg apps 'foo --classic' 'bar --beta' 'woof' via  
-# $ snap install foo bar woof
-# we also want to setup removable media connection ie
-# snap connect foo:removale-media; snap connect bar:removable-media; snap connect woof:removable-media
-# hence the loop
 
-SNAPS_=("thunderbird --beta" "telegram-desktop" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" "node --channel=10/stable --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+# Note: Although we can install Snap eg apps 'foo --classic' 'bar --beta'etc i.e.
+#           $ snap install foo bar
+#       but we also want to setup removable media connection ie
+#           $ snap connect foo:removale-media; snap connect bar:removable-media
+#       hence the loop
 
+    SNAPS_=("thunderbird --beta" "telegram-desktop" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" "node --channel=10/stable --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
-for index in "${SNAPS_[@]}"
-    do
-        sudo snap install $index
-        sudo snap connect $("$index" | cut -d' ' -f1):removable-media 2>/dev/null
-    done
-
+    for index in "${SNAPS_[@]}"
+        do
+            sudo snap install $index
+            sudo snap connect $("$index" | cut -d' ' -f1):removable-media 2>/dev/null
+        done
+}
 
 
-#####################################################################
+
+install_many_flatpaks () {
 # Install Flatpak's
-# #################
-# 
-#
-FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop)
+
+    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop)
 
 
-for index in "${FLATPAKS[@]}"
-    do
-        flatpak install -y flathub $index
-    done
+    for index in "${FLATPAKS[@]}"
+        do
+            flatpak install -y flathub $index
+        done
+
+}
+
+
+# Setup Gufw
+setup_firewall () {
+
+    sudo ufw enable
+    sudo ufw allow 631/tcp
+    sudo ufw allow 1714:1764/udp
+    sudo ufw allow 1714:1764/tcp
+    sudo ufw reload
+}
 
 
 
 
-#####################################################################
-# ODD-BALL INSTALLATIONS
-# ######################
-#
 
-# Install Graphical Uncomplicated Firewall
-sudo apt install -y gufw
-sudo ufw enable
-sudo ufw allow 631/tcp
-sudo ufw allow 1714:1764/udp
-sudo ufw allow 1714:1764/tcp
-sudo ufw reload
+# Install Google Fonts
+get_and_install_google_fonts () {
+#   Get http of all google fonts
+#   This was done manually by copying the download URL, via Falkon browser 
+#   having selected desired fonts at https://fonts.google.com/
 
-# MS Fonts
-sudo apt install -y ttf-mscorefonts-installer
-
-###############
-# Google Fonts
-###############
-
-# Get http of all google fonts
-# This was done manually by copying the download URL, via Falkon browser 
-# having selected desired fonts at https://fonts.google.com/
-
-readonly LOCAL_FONT_DIR="/usr/share/fonts/truetype"
-readonly GOOGY_FONTS="/home/$USER/Downloads/googleFonts"
-mkdir -p $GOOGY_FONTS 
-mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
+    readonly LOCAL_FONT_DIR="/usr/share/fonts/truetype"
+    readonly GOOGY_FONTS="/home/$USER/Downloads/googleFonts"
+    mkdir -p $GOOGY_FONTS 
+    mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
 
 
 # For reasons unkown, wget wouldn't download all the fonts in one single URL
 # Hence the $wget -i witha a URL list created via a heredoc
 
-cat << __EOF__ > $GOOGY_FONTS/google_font_list.txt
+    cat << __EOF__ > $GOOGY_FONTS/google_font_list.txt
 https://fonts.google.com/download?family=ABeeZee|Abel|Abril+Fatface|Aclonica|Acme|Actor|Adamina|Advent+Pro|Aldrich|Alegreya|Alegreya+Sans|Alegreya+Sans+SC|Alex+Brush|Alfa+Slab+One
 https://fonts.google.com/download?family=Alice|Allerta|Allura|Amatic+SC|Amiri|Anaheim|Antic+Slab|Anton|Arapey|Arbutus+Slab|Architects+Daughter|Archivo|Archivo+Black|Archivo+Narrow|Aref+Ruqaa|Arimo|Armata|Arvo|Asap|Assistant|Audiowide|Bad+Script|Bai+Jamjuree|Baloo|Baloo+Tamma|Bangers|Barlow|Barlow+Condensed|Barlow+Semi+Condensed
 https://fonts.google.com/download?family=Basic|BenchNine|Bevan|Bitter|Black+Han+Sans|Black+Ops+One|Boogaloo|Bowlby+One+SC|Bree+Serif|Cabin|Cabin+Condensed|Cabin+Sketch|Cairo|Candal|Cantarell|Cantata+One|Cardo|Carme|Carter+One|Catamaran|Caveat|Caveat+Brush|Ceviche+One|Chakra+Petch|Chivo|Cinzel|Coda|Comfortaa|Coming+Soon|Concert+One|Cookie|Copse|Cormorant|Cormorant+Garamond|Cormorant+Upright
@@ -175,46 +180,258 @@ __EOF__
 # file should consist of a series of URLs, one per line
 # Note: OFL.txt is just liscence info
 
-pushd $GOOGY_FONTS/google_font_downloads
-wget -q -i $GOOGY_FONTS/google_font_list.txt
-for i in *; do mv $i `echo $i | cut -d'=' -f2`.zip; done  # clean up zip filenames
-for i in *; do unzip $i; `if [ -f OFL.txt ]; then rm OFL.txt; fi`; done  # remove OFL.txt, causes errors
-rm *.zip
+    pushd $GOOGY_FONTS/google_font_downloads
+    wget -q -i $GOOGY_FONTS/google_font_list.txt
+    for i in *; do mv $i `echo $i | cut -d'=' -f2`.zip; done  # clean up zip filenames
+    for i in *; do unzip $i; `if [ -f OFL.txt ]; then rm OFL.txt; fi`; done  # remove OFL.txt, causes errors
+    rm *.zip
 
 
 # Copy fonts to correct directories
 
-if [ $(which libreoffice) = "/usr/bin/libreoffice" ] 
-    then
-        sudo chmod 775 $LOCAL_FONT_DIR
-        cp -r * $LOCAL_FONT_DIR
-        sudo chmod 755 $LOCAL_FONT_DIR
-        printf "copied fonts to $LOCAL_FONT_DIR\n"
-fi
+    if [ $(which libreoffice) = "/usr/bin/libreoffice" ] 
+        then
+            sudo chmod 775 $LOCAL_FONT_DIR
+            cp -r * $LOCAL_FONT_DIR
+            sudo chmod 755 $LOCAL_FONT_DIR
+            printf "copied fonts to $LOCAL_FONT_DIR\n"
+    fi
 
 
-if [ $(which libreoffice) = "/snap/*" ] 
-    then
-        # cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
-        printf "WARNING : Code incomplete, need to put correct snap path in!\n"
-fi
+    if [ $(which libreoffice) = "/snap/*" ] 
+        then
+            # cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
+            printf "WARNING : Code incomplete, need to put correct snap path in!\n"
+    fi
 
-if [ $(which libreoffice) = "/.var/*" ] 
-    then
-        # cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
-        printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
-fi
+    if [ $(which libreoffice) = "/.var/*" ] 
+        then
+            # cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
+            printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
+    fi
 
-popd
-rm -r $GOOGY_FONTS
+    popd
+    rm -r $GOOGY_FONTS
+
+}
 
 
-#--------------------------------------------------------------------------------------------
+
+
+# PRINTER INSTALLATION - Brother DCPJ-140W 
+add_printer_driver () {
+
+    printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
+    printf "****************************************************************\n"
+    printf "You are going to install following packages.. --> y\n"
+    printf "Brother License Agreement --> y\n"
+    printf "Do you agree? --> y\n"
+    printf "Will you specify the Device URI? --> y\n"
+    printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
+    printf "Test Print? [y/N] --> choose y or n\n"
+    printf "Do you agree? --> y\n"
+    printf "Do you agree? --> y\n"
+    printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
+
+    wget -q https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
+    gunzip linux-brprinter-installer-2.2.1-1.gz
+    sudo bash linux-brprinter-installer-2.2.1-1 DCP-J140W 
+}
+
+
+
+
+# GIMP filters from Gimp 2.8 to 2.10
+
+install_gimp_filters() {
+    PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
+    if [ ! $(which gimp-plugin-registry) ]; then 
+    sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
+    fi
+
+    # Copy 2.8 plugins to Gimp 2.10 Snap
+    if [ -e "/snap/bin/gimp" ]; then
+    PLUGIN_SNAP_PATH=$(find /home/$USER/snap plug-ins | grep GIMP/2.10/plug-ins | head -1)
+    cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
+    fi
+
+    # Copy 2.8 plugins to Gimp 2.10 Flatpak
+    if [ -e "/home/$USER/.var/app/org.gimp.GIMP" ]; then
+    PLUGIN_FLATPAK_PATH=$(find /home/$USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
+    cp $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
+    fi
+
+    # remove old gimp 2_8
+    sudo apt -y remove gimp-plugin-registry
+
+}
+
+
+
+# Install Calibre - this is fallback should Flatpak install fail
+# sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+
+
+
+# create Appimages directory in /opt
+create_appimages_dir () {
+
+    sudo mkdir -p /opt/appimages
+    sudo chmod +x /opt/appimages
+}
+
+
+
+# Install Etcher via Appimages
+install_etcher () {
+
+    echo -e"\nInstalling Etcher Appimage 1.4.6\n"
+    pushd /opt/appimages
+    wget https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
+    unzip etcher-electron-1.4.6-x86_64.AppImage
+    sudo chmod +x etcher-electron-1.4.6-x86_64.AppImage 
+    popd
+}
+
+
+
+
+# Install Git-it
+install_git-it () {
+    echo -e"\nInstalling Git-it\n"
+    sudo chmod 775 /usr/share/applications
+    sudo chmod 775 /usr/share/pixmaps
+    pushd /home/$USER/.local/share
+    wget https://github.com/jlord/git-it-electron/releases/download/4.4.0/Git-it-Linux-x64.zip
+    popd
+    pushd /usr/share/pixmaps
+    wget https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/git-it.png
+    pushd
+    sudo chmod 755 /usr/share/applications
+    sudo chmod 755 /usr/share/pixmaps
+
+}
+
+
+
+
+# Install GNU Ring - assume Ubuntu amd64 'ring-all' version
+install_ring () {
+    echo -e"\nInstalling GNU Ring\n"
+    pushd /home/$USER/Downloads
+    wget https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
+    sudo dpkg -i ring-all_amd64.deb
+    popd
+}
+
+
+
+
+# Setup 'updateme' alias
+setup_updateme_alias () {
+
+    if [ -f /home/$USER/.bash_aliases ]; then
+        cp /home/$USER/.bashrc /home/$USER/.bash_aliases
+        else touch /home/$USER/.bash_aliases
+    fi
+
+    cat << _EOF_ >> /home/$USER/.bash_aliases
+alias updateme="sudo apt update && sudo apt upgrade && sudo apt autoremove --purge && sudo snap refresh && flatpak update"
+_EOF_
+
+}
+
+
+install_abricotine () {
+# Install Abricotine markdown editor
+
+    sudo apt install gvfs-bin
+    pushd /home/$USER/Downloads
+    wget https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
+    sudo dpkg -i Abricotine-0.6.0-ubuntu-debian-x64.deb
+    popd
+
+}
+
+
+
+
+# Check external drives are owned by the current owner and group
+setup_external_hd_ownership () {
+
+    echo "Please ensured external drives are mounted?  enter y when done"
+    read mount_prompt
+    if [ $mount_prompt = "y" ]; then
+            lsblk | grep $USER
+            sudo chown -R ${USER}:${USER} /$(lsblk | grep $USER | cut -d'/' -f2,3,4)
+            # lsblk | grep $USER | cut -d'/' -f1,2,3,4
+            # └─sdb3   8:19   0   4.4T  0 part /media/tom/F_Drive
+    fi
+
+}
+
+
+
+
+
+config_autostarts () {
+
+    # Yakuake
+    #   Set yakuake to autostart but closed
+    #   Since Yakuake is a KDE app can use qcbus interface
+
+        qdbus org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
+
+
+    # Tomboy notes
+    #   Set tomboynotes to autostart
+    #   Tomboynotes isn't a KDE app, its mono so qdbus won't work
+    #   But want Tomboy closed, i.e. no search
+    #   by default the tomboy.desktop Exec has a search flag enabled ie. 
+    #   Exec=tommboy --search
+    #   because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
+
+        TOMBOY_DESKTOP_CONFIG=/home/$USER/.config/autostart/tomboy.desktop
+        echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
+
+    
+        echo -e "\n--> DONE\n"
+}
+
+#######################################################################
+############################   MAIN  ##################################
+
+check_if_distro_is_ubuntu
+get_distro_name
+update_n_refresh
+apt_installs
+update_n_refresh
+setup_firewall
+ensure_snapd_flatpak_installed
+install_many_snaps
+install_many_flatpaks
+create_appimages_dir
+install_etcher
+install_git-it
+install_abricotine
+install_gimp_filters
+get_and_install_google_fonts
+add_printer_driver
+setup_updateme_alias
+setup_external_hd_ownership
+config_autostarts
+
+exit 0
+
+
+
+#######################################################################
+#----------------------------------------------------------------------
 # ---> NOT USING THIS CODE BUT KEEP JUST IN CASE FOR FUTURE
 
 # TO GET A COMPLETE .json list OF ALL GOOGLES FONTS
 # -------------------------------------------------
-# KEY=AIzaSyBlbHgSARiZxMS5qOu8RpNQwmpHaKquGTM  # FIrst get an API key and substitute in here
+# KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # First get an API key and substitute in here
 # OUTPUT_FILE="./static/googleFonts.json"
 # mkdir -p ./static
 
@@ -225,177 +442,4 @@ rm -r $GOOGY_FONTS
 #   sed '$s/\(.*\),/\1/' >> $OUTPUT_FILE
 
 # echo ']' >> $OUTPUT_FILE
-# #--------------------------------------------------------------------------------------------
-
-
-# ######   MOST PEOPLE WONT NEED THIS!   ######
-# ######  SPECIFIC PRINTER INSTALLATION  ######
-# Add Printer and scanner drivers
-# DCPJ-140W at the moment
-
-printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
-printf "****************************************************************\n"
-printf "You are going to install following packages.. --> y\n"
-printf "Brother License Agreement --> y\n"
-printf "Do you agree? --> y\n"
-printf "Will you specify the Device URI? --> y\n"
-printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
-printf "Test Print? [y/N] --> choose y or n\n"
-printf "Do you agree? --> y\n"
-printf "Do you agree? --> y\n"
-printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
-
-wget -q https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
-gunzip linux-brprinter-installer-2.2.1-1.gz
-sudo bash linux-brprinter-installer-2.2.1-1 DCP-J140W 
-
-
-# #####################################
-# GIMP filters from Gimp 2.8 to 2.10
-#
-PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
-if [ ! $(which gimp-plugin-registry) ]; then 
-  sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
-fi
-
-# Copy 2.8 plugins to Gimp 2.10 Snap
-if [ -e "/snap/bin/gimp" ]; then
-  PLUGIN_SNAP_PATH=$(find /home/$USER/snap plug-ins | grep GIMP/2.10/plug-ins | head -1)
-  cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
-fi
-
-# Copy 2.8 plugins to Gimp 2.10 Flatpak
-if [ -e "/home/$USER/.var/app/org.gimp.GIMP" ]; then
-  PLUGIN_FLATPAK_PATH=$(find /home/$USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
-  cp $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
-fi
-
-# remove old gimp 2_8
-sudo apt -y remove gimp-plugin-registry
-
-
-
-# #################################
-# Install Calibre - 
-# this is fallback should Flatpak install fail
-#
-# sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
-
-
-# #################################
-# Install Etcher Appimages
-#
-# creat Appimages directory in /opt
-sudo mkdir -p /opt/appimages
-sudo chmod +x /opt/appimages
-
-echo -e"\nInstalling Etcher Appimage 1.4.6\n"
-
-pushd /opt/appimages
-wget https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
-unzip etcher-electron-1.4.6-x86_64.AppImage
-sudo chmod +x etcher-electron-1.4.6-x86_64.AppImage 
-popd
-
-
-# #################################
-# Install Git-it
-#
-echo -e"\nInstalling Git-it\n"
-sudo chmod 775 /usr/share/applications
-sudo chmod 775 /usr/share/pixmaps
-pushd /home/$USER/.local/share
-wget https://github.com/jlord/git-it-electron/releases/download/4.4.0/Git-it-Linux-x64.zip
-popd
-pushd /usr/share/pixmaps
-wget https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/git-it.png
-pushd
-sudo chmod 755 /usr/share/applications
-sudo chmod 755 /usr/share/pixmaps
-
-
-
-
-# #################################
-# Install GNU Ring
-#  - assume Ubuntu amd64 'ring-all' version
-echo -e"\nInstalling GNU Ring\n"
-pushd /home/$USER/Downloads
-wget https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
-sudo dpkg -i ring-all_amd64.deb
-popd
-
-
-# #################################
-# Setup 'updateme' alias
-
-if [ -f /home/$USER/.bash_aliases ]; then
-    cp /home/$USER/.bashrc /home/$USER/.bash_aliases
-    else touch /home/$USER/.bash_aliases
-fi
-
-cat << _EOF_ >> /home/$USER/.bash_aliases
-alias updateme='sudo apt update && sudo apt upgrade && sudo apt autoremove --purge && sudo snap refresh && flatpak update'
-_EOF_
-
-
-
-# #################################
-# Install Abricotine markdown editor
-
-sudo apt install gvfs-bin
-pushd /home/$USER/Downloads
-wget https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
-sudo dpkg -i Abricotine-0.6.0-ubuntu-debian-x64.deb
-popd
-
-
-
-#####################################################################
-# Check external drives are mounted
-# #################################
-echo "Please ensured external drives are mounted?  press y when done"
-read mount_prompt
-if [$mount_prompt="y"]; then
-        lsblk | grep $USER
-        sudo chown -R ${USER}:${USER} /$(lsblk | grep $USER | cut -d'/' -f2,3,4)
-        # lsblk | grep $USER | cut -d'/' -f1,2,3,4
-        # └─sdb3   8:19   0   4.4T  0 part /media/tomdom/F_Drive
-fi
-
-
-
-
-
-
-
-
-
-
-#####################################################################
-# SET AUTOSTARTS
-# ######################
-#
-#
-# Yakuake
-# Set yakuake to autostart but closed
-# Since Yakuake is a KDE app can use qcbus interface
-
-# qdbus org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
-
-
-# Tomboy notes
-# Set tomboynotes to autostart
-# Tomboynotes isn't a KDE app, its mono so qdbus won't work
-
-
-# But want Tomboy closed, i.e. no search
-# by default the tomboy.desktop Exec has a search flag enabled ie. 
-# Exec=tommboy --search
-# because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
-TOMBOY_DESKTOP_CONFIG=~/.config/autostart/tomboy.desktop
-echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
-
-
-echo -e"\n--> DONE\n"
-exit 0
+# #----------------------------------------------------------------------

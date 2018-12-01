@@ -55,7 +55,7 @@ update_n_refresh () {
 
 # Traditional apt installs
 apt_installs () {
-    sudo apt install ttf-mscorefonts-installer gufw kate yakuake tomboy falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer -yy
+    sudo apt install ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox youtube-dl falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer -yy
 }
 
 

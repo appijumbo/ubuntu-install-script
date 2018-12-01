@@ -3,8 +3,8 @@ clear
 
 # Global variables
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
-UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null
-
+# appears no quiet available flag for pkcon so dev/null it
+UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null 
 
 check_if_distro_is_ubuntu () {
 if [ ! $(which apt) ]

@@ -37,7 +37,7 @@ get_distro_name () {
 update_n_refresh () {
     printf "******************************************************\n"
     printf "*\n* Checking up-to-date\n"
-        if [ $distro_type = "KDE neon" ]
+        if [ "$distro_type" = "KDE neon" ]
             then $UPDATE_NEON
             else $UPDATE_UBUNTU
         fi

@@ -344,14 +344,22 @@ install_ring () {
 setup_updateme_alias () {
 
     if [ -f /home/$USER/.bash_aliases ]; then
-        cp /home/$USER/.bashrc /home/$USER/.bash_aliases
+        cp /home/$USER/.bash_aliases /home/$USER/.bash_aliases_backup
         else touch /home/$USER/.bash_aliases
     fi
 
     cat << _EOF_ >> /home/$USER/.bash_aliases
+alias cdF_disk="cd /media/tomdom/F_Disk/"
+alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
+alias cdlinux="'/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
 alias updateme="sudo apt update && sudo apt upgrade && sudo apt autoremove --purge && sudo snap refresh && flatpak update"
 _EOF_
+}
 
+
+
+backup_bashrc () {
+   cp /home/$USER/.bashrc /home/$USER/.bashrc_backup
 }
 
 
@@ -431,6 +439,7 @@ install_abricotine
 install_gimp_filters
 get_and_install_google_fonts
 add_printer_driver
+backup_bashrc
 setup_updateme_alias
 setup_external_hd_ownership
 config_autostarts

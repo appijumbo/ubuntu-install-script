@@ -94,8 +94,15 @@ install_many_snaps () {
     for index in "${SNAPS_[@]}"
         do
             sudo snap install $index
-            sudo snap connect $("$index" | cut -d' ' -f1):removable-media 2>/dev/null
+            sudo snap connect $("$index" | cut -d' ' -f1):removable-media >> /dev/null 2>&1
         done
+        
+            
+    printf "**************************************************\n"
+    printf "Snap Apps Installed\n"
+    printf "------------------\n"
+    snap list
+    printf "\n**************************************************\n"
 }
 
 
@@ -103,14 +110,20 @@ install_many_snaps () {
 install_many_flatpaks () {
 # Install Flatpak's
 
-    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop)
+    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
 
 
     for index in "${FLATPAKS[@]}"
         do
-            flatpak install -y flathub $index
+            flatpak install -y flathub $index >> /dev/null 2>&1
         done
-
+        
+    printf "**************************************************\n"
+    printf "Flatpak Apps Installed\n"
+    printf "------------------\n"
+    flatpak list
+    printf "\n**************************************************\n"
+    
 }
 
 
@@ -400,6 +413,7 @@ config_autostarts () {
 
 #######################################################################
 ############################   MAIN  ##################################
+
 
 check_if_distro_is_ubuntu
 get_distro_name

@@ -104,7 +104,7 @@ install_many_snaps () {
     for index in "${SNAPS_[@]}"
         do
             sudo snap install $index
-            sudo snap connect $("$index" | cut -d' ' -f1):removable-media >> /dev/null 2>&1
+            sudo snap connect $("$index" | cut -d' ' -f1):removable-media
         done
         
             
@@ -124,7 +124,7 @@ install_many_flatpaks () {
 
     for index in "${FLATPAKS[@]}"
         do
-            flatpak install -y flathub $index >> /dev/null 2>&1
+            flatpak install -y flathub $index
         done
         
     printf "Flatpak Apps Installed\n"

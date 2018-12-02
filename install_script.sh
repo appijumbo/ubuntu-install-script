@@ -55,7 +55,7 @@ update_n_refresh () {
 
 # Traditional apt installs
 apt_installs () {
-    sudo apt install ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox youtube-dl falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer -yy
+    sudo apt install git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox youtube-dl falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline -yy
 }
 
 
@@ -89,7 +89,7 @@ install_many_snaps () {
 #           $ snap connect foo:removale-media; snap connect bar:removable-media
 #       hence the loop
 
-    SNAPS_=("thunderbird --beta" "telegram-desktop" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" "node --channel=10/stable --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --channel=10/stable --classic" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
         do
@@ -139,6 +139,27 @@ setup_firewall () {
 
 
 
+install_node_npm_nvm () {
+    
+    # The NodeSource-managed Node.js snap contains the Node.js runtime, along the two most widely-used package managers, npm and Yarn.
+    
+    # install node via snap for channel selected
+     if [ ! $(which node) ]; then snap install "node --channel=10/stable --classic"; fi
+    
+    # install nvm
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    
+    # Snaps are delivered via "channels", for Node.js, the channel names are the major-version number of Node.js eg.
+    #   $ sudo snap install node --classic --channel=8
+     
+    # To switch to a new channel  --->  $ sudo snap refresh node --channel=10
+
+    # Not for production deployments; use .deb or .rpm
+    
+    # To test an installation is working
+    curl -sL https://deb.nodesource.com/test | bash -
+
+}
 
 
 # Install Google Fonts
@@ -375,6 +396,31 @@ install_abricotine () {
 }
 
 
+install_oh_my_zsh () {
+    # ensure zsh and power fonts (required for some zsh themes) is installed
+    if [ ! $(which zsh) ]; then 
+        sudo apt install zsh
+        sudo apt-get install fonts-powerline
+    fi
+    sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+    
+    ZSH_CUSTOM_THEMES=/home/$USER/.oh-my-zsh/custom/themes/
+    cp /home/$USER/.zshrc /home/$USER/.zshrc_backup
+    
+    # install oh-my-zsh 'Node' theme
+    wget -O $ZSH_CUSTOM_THEMES/node.zsh-theme https://raw.githubusercontent.com/skuridin/oh-my-zsh-node-theme/master/node.zsh-theme
+  
+    # install oh-my-zsh 'Space ship' theme
+    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM_THEMES/spaceship-prompt"
+    ln -s "$ZSH_CUSTOM_THEMES/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_THEMES/spaceship.zsh-theme"
+    
+    # Set zsh theme to spaceship
+    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="spaceship"/g' /home/$USER/.zshrc
+    
+    # Alternativley set theme to node.zsh
+    # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="node.zsh-theme"/g' /home/$USER/.zshrc
+}
+
 
 
 # Check external drives are owned by the current owner and group
@@ -432,15 +478,17 @@ setup_firewall
 ensure_snapd_flatpak_installed
 install_many_snaps
 install_many_flatpaks
+install_node_npm_nvm
 create_appimages_dir
 install_etcher
 install_git-it
 install_abricotine
 install_gimp_filters
 get_and_install_google_fonts
-add_printer_driver
+install_oh_my_zsh
 backup_bashrc
 setup_updateme_alias
+add_printer_driver
 setup_external_hd_ownership
 config_autostarts
 

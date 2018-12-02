@@ -129,7 +129,6 @@ install_many_flatpaks () {
         
     printf "**************************************************\n"
     printf "Flatpak Apps Installed\n"
-    printf "------------------\n"
     flatpak list
     printf "\n**************************************************\n"
     
@@ -138,12 +137,15 @@ install_many_flatpaks () {
 
 # Setup Gufw
 setup_firewall () {
-
+    printf "**************************************************\n"
+    printf "Setup Firewall\n"
     sudo ufw enable
     sudo ufw allow 631/tcp
     sudo ufw allow 1714:1764/udp
     sudo ufw allow 1714:1764/tcp
     sudo ufw reload
+    sudo ufw status
+    printf "**************************************************\n"
 }
 
 

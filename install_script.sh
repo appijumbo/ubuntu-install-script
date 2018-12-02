@@ -97,7 +97,8 @@ install_many_snaps () {
 #       but we also want to setup removable media connection ie
 #           $ snap connect foo:removale-media; snap connect bar:removable-media
 #       hence the loop
-
+    printf "**************************************************\n"
+    printf "Installing Snaps\n"
     SNAPS_=("thunderbird --beta" "telegram-desktop" "node --channel=10/stable --classic" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
@@ -107,9 +108,7 @@ install_many_snaps () {
         done
         
             
-    printf "**************************************************\n"
     printf "Snap Apps Installed\n"
-    printf "------------------\n"
     snap list
     printf "\n**************************************************\n"
 }
@@ -118,7 +117,8 @@ install_many_snaps () {
 
 install_many_flatpaks () {
 # Install Flatpak's
-
+    printf "**************************************************\n"
+    printf "Installing Flatpaks\n"
     FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
 
 
@@ -127,7 +127,6 @@ install_many_flatpaks () {
             flatpak install -y flathub $index >> /dev/null 2>&1
         done
         
-    printf "**************************************************\n"
     printf "Flatpak Apps Installed\n"
     flatpak list
     printf "\n**************************************************\n"

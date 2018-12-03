@@ -384,16 +384,12 @@ install_git-it () {
 
 
 
-
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
 install_ring () {
     printf "**************************************************\n"
     printf "Download and Install GNU Ring"
-    echo -e"\nInstalling GNU Ring\n"
-    pushd /home/$USER/Downloads
-    wget https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
-    sudo dpkg -i ring-all_amd64.deb
-    popd
+    wget -O /home/$USER/Downloads/ring-all_amd64.deb https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
+    sudo dpkg -i /home/$USER/Downloads/ring-all_amd64.deb
 }
 
 

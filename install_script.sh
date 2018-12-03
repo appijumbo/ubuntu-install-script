@@ -1,6 +1,15 @@
 #!/bin/bash
 clear
 
+printf "******************************************************"
+printf "Require root privillages to install packages"
+printf "Please run as\n\n$ sudo ./install_script.sh\n"
+printf "This should solve possible installation issues"
+printf "******************************************************\n"
+#sudo -i   hopefully not necessary  
+
+
+
 # Global variables
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
@@ -99,12 +108,19 @@ install_many_snaps () {
 #       hence the loop
     printf "**************************************************\n"
     printf "Installing Snaps\n"
-    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --channel=10/stable --classic" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
         do
             sudo snap install $index
-            sudo snap connect $("$index" | cut -d' ' -f1):removable-media
+            sudo snap connect $("$index" | cut -d' ' -f1):removable-media 2>/dev/null
+                # Note when testing this 'removable-media' it may fail in a VM
+                # since if confined and unable to access external media,
+                # ie a 'permission denied' errors
+                
+                # Also all errors are by deafult sent to dev/null because
+                # they are likley to be 'plugin snap name empty' errors
+                # due to the snap eg. 'node' not having an external-media connection.
         done
         
             
@@ -150,14 +166,17 @@ setup_firewall () {
 
 
 install_node_npm_nvm () {
+    printf "**************************************************\n"
+    printf "Check node installation is working"
     
     # The NodeSource-managed Node.js snap contains the Node.js runtime, along the two most widely-used package managers, npm and Yarn.
     
     # install node via snap for channel selected
-     if [ ! $(which node) ]; then snap install "node --channel=10/stable --classic"; fi
+     if [ ! $(which node) ]; then snap install "node --classic --channel=10"; fi
     
-    # install nvm
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    # Install Node Version Manager (NVM) 
+    # - but not sure if required with Snap based node control
+    # wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     
     # Snaps are delivered via "channels", for Node.js, the channel names are the major-version number of Node.js eg.
     #   $ sudo snap install node --classic --channel=8
@@ -174,6 +193,8 @@ install_node_npm_nvm () {
 
 # Install Google Fonts
 get_and_install_google_fonts () {
+    printf "**************************************************\n"
+    printf "Download and Install Google Fonts"
 #   Get http of all google fonts
 #   This was done manually by copying the download URL, via Falkon browser 
 #   having selected desired fonts at https://fonts.google.com/
@@ -288,6 +309,8 @@ add_printer_driver () {
 # GIMP filters from Gimp 2.8 to 2.10
 
 install_gimp_filters() {
+    printf "**************************************************\n"
+    printf "Install Gimp 2.8 filter to Gimp 2.10"
     PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
     if [ ! $(which gimp-plugin-registry) ]; then 
     sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
@@ -319,7 +342,8 @@ install_gimp_filters() {
 
 # create Appimages directory in /opt
 create_appimages_dir () {
-
+    printf "**************************************************\n"
+    printf "Create Appimage Directory"
     sudo mkdir -p /opt/appimages
     sudo chmod +x /opt/appimages
 }
@@ -328,8 +352,8 @@ create_appimages_dir () {
 
 # Install Etcher via Appimages
 install_etcher () {
-
-    echo -e"\nInstalling Etcher Appimage 1.4.6\n"
+    printf "**************************************************\n"
+    printf "Installing Etcher Appimage 1.4.6\n"
     pushd /opt/appimages
     wget https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
     unzip etcher-electron-1.4.6-x86_64.AppImage
@@ -342,15 +366,17 @@ install_etcher () {
 
 # Install Git-it
 install_git-it () {
-    echo -e"\nInstalling Git-it\n"
+    printf "**************************************************\n"
+    printf "Download and Install Git-it git help tool"
     sudo chmod 775 /usr/share/applications
     sudo chmod 775 /usr/share/pixmaps
-    pushd /home/$USER/.local/share
-    wget https://github.com/jlord/git-it-electron/releases/download/4.4.0/Git-it-Linux-x64.zip
-    popd
-    pushd /usr/share/pixmaps
-    wget https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/git-it.png
-    pushd
+    
+    # reminder:  wget -O directory/filename https://url/filename
+    
+    wget -O /home/$USER/.local/share/Git-it-Linux-x64.zip https://github.com/jlord/git-it-electron/releases/download/4.4.0/Git-it-Linux-x64.zip
+
+    wget -O /usr/share/pixmaps/git-it.png https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/git-it.png
+
     sudo chmod 755 /usr/share/applications
     sudo chmod 755 /usr/share/pixmaps
 
@@ -361,6 +387,8 @@ install_git-it () {
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
 install_ring () {
+    printf "**************************************************\n"
+    printf "Download and Install GNU Ring"
     echo -e"\nInstalling GNU Ring\n"
     pushd /home/$USER/Downloads
     wget https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
@@ -373,7 +401,8 @@ install_ring () {
 
 # Setup 'updateme' alias
 setup_updateme_alias () {
-
+    printf "**************************************************\n"
+    printf "Setup aliases"
     if [ -f /home/$USER/.bash_aliases ]; then
         cp /home/$USER/.bash_aliases /home/$USER/.bash_aliases_backup
         else touch /home/$USER/.bash_aliases
@@ -395,8 +424,8 @@ backup_bashrc () {
 
 
 install_abricotine () {
-# Install Abricotine markdown editor
-
+    printf "**************************************************\n"
+    printf "Install Abricotine markdown editor"
     sudo apt install gvfs-bin
     pushd /home/$USER/Downloads
     wget https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
@@ -407,6 +436,8 @@ install_abricotine () {
 
 
 install_oh_my_zsh () {
+    printf "**************************************************\n"
+    printf "Install oh-my-zsh shell"
     # ensure zsh and power fonts (required for some zsh themes) is installed
     if [ ! $(which zsh) ]; then 
         sudo apt install zsh

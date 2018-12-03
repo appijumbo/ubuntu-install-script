@@ -9,21 +9,22 @@ printf "******************************************************\n"
 #sudo -i   hopefully not necessary  
 
 
-
 # Global variables
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
 UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null 
 
+
+
 check_if_distro_is_ubuntu () {
 if [ ! $(which apt) ]
     then
         clear
-        echo -e "******************************************************\n"
-        echo -e "This is intended for Ubuntu based distros\n"
-        echo -e "no apt present so assume this is not an Ubuntu base\n"
-        echo -e "will exit in a few seconds......\n"
-        echo -e "******************************************************\n"
+        printf "******************************************************\n"
+        printf "This is intended for Ubuntu based distros\n"
+        printf "no apt present so assume this is not an Ubuntu base\n"
+        printf "will exit in a few seconds......\n"
+        printf "******************************************************\n"
         sleep 6
         exit 2
 fi
@@ -38,7 +39,7 @@ get_distro_name () {
     distro_name="${DISTRO_NAME%\"}"     # remove leading quote
     distro_name="${distro_name#\"}"     # remove trailing quote
     printf "******************************************************\n"
-    printf "*\n* This distro is $distro_name\n*\n"
+    printf "This distro is $distro_name\n"
 }
 
 
@@ -108,7 +109,7 @@ install_many_snaps () {
 #       hence the loop
     printf "**************************************************\n"
     printf "Installing Snaps\n"
-    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
         do
@@ -167,12 +168,12 @@ setup_firewall () {
 
 install_node_npm_nvm () {
     printf "**************************************************\n"
-    printf "Check node installation is working"
+    printf "Check node installation is working\n"
     
     # The NodeSource-managed Node.js snap contains the Node.js runtime, along the two most widely-used package managers, npm and Yarn.
     
     # install node via snap for channel selected
-     if [ ! $(which node) ]; then snap install "node --classic --channel=10"; fi
+     if [ ! $(which node) ]; then snap install "node --classic --channel=10/stable"; fi
     
     # Install Node Version Manager (NVM) 
     # - but not sure if required with Snap based node control
@@ -409,10 +410,9 @@ setup_updateme_alias () {
 alias cdF_disk="cd /media/tomdom/F_Disk/"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="'/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
-alias updateme="sudo apt update && sudo apt upgrade && sudo apt autoremove --purge && sudo snap refresh && flatpak update"
+alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update"
 _EOF_
 }
-
 
 
 backup_bashrc () {

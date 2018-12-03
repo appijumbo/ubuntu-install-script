@@ -1,10 +1,10 @@
 #!/bin/bash
 clear
 
-printf "******************************************************"
-printf "Require root privillages to install packages"
+printf "******************************************************\n"
+printf "Require root privillages to install packages\n"
 printf "Please run as\n\n$ sudo ./install_script.sh\n"
-printf "This should solve possible installation issues"
+printf "This should solve possible installation issues\n"
 printf "******************************************************\n"
 #sudo -i   hopefully not necessary  
 
@@ -69,7 +69,7 @@ apt_installs () {
     FILE="/var/run/reboot-required"    
         if [ -f $FILE ]
             then 
-                echo "Just updated and upgraded REEBOOT REQUIRED !" && exit 1
+                echo "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
             else
                 sudo apt install -y git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack youtube-dl falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
         fi
@@ -298,9 +298,11 @@ add_printer_driver () {
     printf "Do you agree? --> y\n"
     printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
 
-    wget -q https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
-    gunzip linux-brprinter-installer-2.2.1-1.gz
-    sudo bash linux-brprinter-installer-2.2.1-1 DCP-J140W 
+    wget -qO /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
+    gunzip /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
+    sudo bash /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1 DCP-J140W
+    rm /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
+    rm /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1
 }
 
 
@@ -310,7 +312,7 @@ add_printer_driver () {
 
 install_gimp_filters() {
     printf "**************************************************\n"
-    printf "Install Gimp 2.8 filter to Gimp 2.10"
+    printf "Install Gimp 2.8 filter to Gimp 2.10\n"
     PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
     if [ ! $(which gimp-plugin-registry) ]; then 
     sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
@@ -343,7 +345,7 @@ install_gimp_filters() {
 # create Appimages directory in /opt
 create_appimages_dir () {
     printf "**************************************************\n"
-    printf "Create Appimage Directory"
+    printf "Create Appimage Directory\n"
     sudo mkdir -p /opt/appimages
     sudo chmod +x /opt/appimages
 }
@@ -354,11 +356,10 @@ create_appimages_dir () {
 install_etcher () {
     printf "**************************************************\n"
     printf "Installing Etcher Appimage 1.4.6\n"
-    pushd /opt/appimages
-    wget https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
-    unzip etcher-electron-1.4.6-x86_64.AppImage
-    sudo chmod +x etcher-electron-1.4.6-x86_64.AppImage 
-    popd
+    wget -O /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
+    unzip /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage
+    sudo chmod +x /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage 
+
 }
 
 
@@ -367,7 +368,7 @@ install_etcher () {
 # Install Git-it
 install_git-it () {
     printf "**************************************************\n"
-    printf "Download and Install Git-it git help tool"
+    printf "Download and Install Git-it git help tool\n"
     sudo chmod 775 /usr/share/applications
     sudo chmod 775 /usr/share/pixmaps
     
@@ -387,7 +388,7 @@ install_git-it () {
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
 install_ring () {
     printf "**************************************************\n"
-    printf "Download and Install GNU Ring"
+    printf "Download and Install GNU Ring\n"
     wget -O /home/$USER/Downloads/ring-all_amd64.deb https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
     sudo dpkg -i /home/$USER/Downloads/ring-all_amd64.deb
 }
@@ -398,7 +399,7 @@ install_ring () {
 # Setup 'updateme' alias
 setup_updateme_alias () {
     printf "**************************************************\n"
-    printf "Setup aliases"
+    printf "Setup aliases\n"
     if [ -f /home/$USER/.bash_aliases ]; then
         cp /home/$USER/.bash_aliases /home/$USER/.bash_aliases_backup
         else touch /home/$USER/.bash_aliases
@@ -421,19 +422,18 @@ backup_bashrc () {
 
 install_abricotine () {
     printf "**************************************************\n"
-    printf "Install Abricotine markdown editor"
+    printf "Install Abricotine markdown editor\n"
     sudo apt install gvfs-bin
-    pushd /home/$USER/Downloads
-    wget https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
-    sudo dpkg -i Abricotine-0.6.0-ubuntu-debian-x64.deb
-    popd
+    wget -O /home/$USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
+    sudo dpkg -i /home/$USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb
+
 
 }
 
 
 install_oh_my_zsh () {
     printf "**************************************************\n"
-    printf "Install oh-my-zsh shell"
+    printf "Install oh-my-zsh shell\n"
     # ensure zsh and power fonts (required for some zsh themes) is installed
     if [ ! $(which zsh) ]; then 
         sudo apt install zsh
@@ -499,7 +499,7 @@ config_autostarts () {
         echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
 
     
-        echo -e "\n--> DONE\n"
+        printf "\n--> DONE\n"
 }
 
 #######################################################################

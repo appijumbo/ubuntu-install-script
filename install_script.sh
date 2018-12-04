@@ -362,11 +362,10 @@ install_etcher () {
     etcher_url="https://github.com/balena-io/etcher/releases/download/v1.4.6/"
     
     wget -O /opt/appimages/$etcher_version $etcher_url/$etcher_version
-    sudo chmod 775 /opt/appimages/$etcher_version
-    sudo unzip /opt/appimages/$etcher_version
-    #sudo rm /opt/appimages/etcher.zip
-    sudo chmod 774 /opt/appimages/$etcher_version
-
+    mkdir -p /opt/appimages/Etcher/
+    sudo unzip /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
+    sudo chmod 774 -R opt/appimages/Etcher/*.AppImage
+    
 }
 
 

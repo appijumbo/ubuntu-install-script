@@ -375,17 +375,25 @@ install_etcher () {
 install_git-it () {
     printf "**************************************************\n"
     printf "Download and Install Git-it git help tool\n"
-    sudo chmod 775 /usr/share/applications
-    sudo chmod 775 /usr/share/pixmaps
     
-    # reminder:  wget -O directory/filename https://url/filename
+    share_dir="/home/$USER/.local/share"
     
-    wget -O /home/$USER/.local/share/Git-it-Linux-x64.zip https://github.com/jlord/git-it-electron/releases/download/4.4.0/Git-it-Linux-x64.zip
+    git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0/"
+    git_it_file="Git-it-Linux-x64.zip"
+    
+    git_it_png_url="https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/"
+    
+    applications_dir="/usr/share/applications"
+    pixmaps_dir="/usr/share/pixmaps"
+    
+    sudo chmod 775 $applications_dir
+    sudo chmod 775 $pixmaps_dir
+    
+    wget -O $share_dir/$git_it_file $git_it_url/$git_it_file
+    wget -O $pixmaps_dir/git-it.png $git_it_png_url/git-it.png
 
-    wget -O /usr/share/pixmaps/git-it.png https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/git-it.png
-
-    sudo chmod 755 /usr/share/applications
-    sudo chmod 755 /usr/share/pixmaps
+    sudo chmod 755 $applications_dir
+    sudo chmod 755 $pixmaps_dir
 
 }
 
@@ -395,8 +403,12 @@ install_git-it () {
 install_ring () {
     printf "**************************************************\n"
     printf "Download and Install GNU Ring\n"
-    wget -O /home/$USER/Downloads/ring-all_amd64.deb https://dl.ring.cx/ubuntu_18.04/ring-all_amd64.deb
-    sudo dpkg -i /home/$USER/Downloads/ring-all_amd64.deb
+    
+    ring_url="https://dl.ring.cx/ubuntu_18.04"
+    ring_file="ring-all_amd64.deb"
+    
+    wget -O /home/$USER/Downloads/$ring_file $ring_url/$ring_file
+    sudo dpkg -i /home/$USER/Downloads/$ring_file
 }
 
 

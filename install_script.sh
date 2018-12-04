@@ -364,7 +364,8 @@ install_etcher () {
     wget -O /opt/appimages/$etcher_version $etcher_url/$etcher_version
     mkdir -p /opt/appimages/Etcher/
     sudo unzip /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
-    sudo chmod 774 -R opt/appimages/Etcher/*.AppImage
+    sudo chmod 774 -R /opt/appimages/Etcher/*.AppImage
+    sudo rm /opt/appimages/$etcher_version
     
 }
 

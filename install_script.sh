@@ -377,24 +377,35 @@ install_git-it () {
     printf "**************************************************\n"
     printf "Download and Install Git-it git help tool\n"
     
-    share_dir="/home/$USER/.local/share"
+    local_share_dir="/home/$USER/.local/share"
+    usr_applications_dir="/usr/share/applications"
+    pixmaps_dir="/usr/share/pixmaps"
     
-    git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0/"
+    git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0"
     git_it_file="Git-it-Linux-x64.zip"
     
     git_it_png_url="https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/"
     
-    applications_dir="/usr/share/applications"
-    pixmaps_dir="/usr/share/pixmaps"
-    
-    sudo chmod 775 $applications_dir
-    sudo chmod 775 $pixmaps_dir
-    
-    wget -O $share_dir/$git_it_file $git_it_url/$git_it_file
-    wget -O $pixmaps_dir/git-it.png $git_it_png_url/git-it.png
 
-    sudo chmod 755 $applications_dir
-    sudo chmod 755 $pixmaps_dir
+    
+    sudo wget -O $local_share_dir/$git_it_file $git_it_url/$git_it_file
+    sudo unzip $local_share_dir/$git_it_file -d $local_share_dir/Git-it-Linux-x64
+    
+    sudo rm $local_share_dir/$git_it_file
+    
+    
+    cat << _EOF_ > $usr_applications_dir/git-it.desktop
+[Desktop Entry]
+Name=Git-it
+Type=Application
+Categories=Git;Github;Development
+Exec=~/.local/share/Git-it-linux-x64/Git-it %F
+Icon=git-it
+MimeType=text/html;
+Keywords=Git;Github
+_EOF_
+    
+    sudo wget -O $pixmaps_dir/git-it.png $git_it_png_url/git-it.png
 
 }
 

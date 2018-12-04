@@ -72,7 +72,7 @@ apt_installs () {
             then 
                 echo "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
             else
-                sudo apt install -y curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack youtube-dl falkon python python3 filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
+                sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack youtube-dl falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
         fi
     
 }
@@ -348,7 +348,7 @@ create_appimages_dir () {
     printf "**************************************************\n"
     printf "Create Appimage Directory\n"
     sudo mkdir -p /opt/appimages
-    sudo chmod +x /opt/appimages
+    sudo chmod +xw /opt/appimages
 }
 
 
@@ -357,9 +357,12 @@ create_appimages_dir () {
 install_etcher () {
     printf "**************************************************\n"
     printf "Installing Etcher Appimage 1.4.6\n"
-    wget -O /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip 
-    unzip /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage
-    sudo chmod +x /opt/appimages/etcher-electron-1.4.6-x86_64.AppImage 
+    etcher_url=https://github.com/balena-io/etcher/releases/download/v1.4.6/etcher-electron-1.4.6-linux-x64.zip
+    wget -O /opt/appimages/etcher $etcher_url
+    sudo chmod 774 /opt/appimages/etcher.zip
+    sudo unzip /opt/appimages/etcher.zip
+    sudo rm /opt/appimages/etcher.zip
+    sudo chmod 774 /opt/appimages/etcher*.AppImage
 
 }
 
@@ -407,9 +410,10 @@ setup_updateme_alias () {
     fi
 
     cat << _EOF_ >> /home/$USER/.bash_aliases
-alias cdF_disk="cd /media/tomdom/F_Disk/"
+alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
-alias cdlinux="'/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
+alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
+alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
 alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update"
 _EOF_
 }
@@ -456,6 +460,9 @@ install_oh_my_zsh () {
     
     # Alternativley set theme to node.zsh
     # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="node.zsh-theme"/g' /home/$USER/.zshrc
+    
+    # make sure bash shell is the default though
+    chsh --shell /bin/bash $USER  
 }
 
 

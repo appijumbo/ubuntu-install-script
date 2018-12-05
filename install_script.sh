@@ -448,17 +448,24 @@ _EOF_
 
 
 backup_bashrc () {
-   cp /home/$USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
+   cp /home/$CURRENT_USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
 }
 
 
 install_abricotine () {
     printf "**************************************************\n"
     printf "Install Abricotine markdown editor\n"
-    sudo apt install gvfs-bin
-    wget -O /home/$CURRENT_USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
-    sudo dpkg -i /home/$CURRENT_USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb
-
+    
+    abricotine_file="Abricotine-0.6.0-ubuntu-debian-x64.deb"
+    abricotine_url="https://github.com/brrd/Abricotine/releases/download/0.6.0"
+    downloads_dir=/home/$CURRENT_USER/Downloads
+    
+    
+    # Ensure dependancies are installed
+    sudo apt -qq install -y git gconf2 gconf-service python gvfs-bin
+    
+    wget -O $downloads_dir/$abricotine_file $abricotine_url/$abricotine_file
+    sudo dpkg -i $downloads_dir/$abricotine_file
 
 }
 
@@ -474,7 +481,7 @@ install_oh_my_zsh () {
     sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
     
     ZSH_CUSTOM_THEMES=/home/$CURRENT_USER/.oh-my-zsh/custom/themes/
-    cp /home/$USER/.zshrc /home/$CURRENT_USER/.zshrc_backup
+    cp /home/$CURRENT_USER/.zshrc /home/$CURRENT_USER/.zshrc_backup
     
     # install oh-my-zsh 'Node' theme
     wget -O $ZSH_CUSTOM_THEMES/node.zsh-theme https://raw.githubusercontent.com/skuridin/oh-my-zsh-node-theme/master/node.zsh-theme

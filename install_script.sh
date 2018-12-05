@@ -2,11 +2,9 @@
 clear
 
 printf "******************************************************\n"
-printf "Require root privillages to install packages\n"
-printf "Please run as\n\n$ sudo ./install_script.sh\n"
-printf "This should solve possible installation issues\n"
+printf "Installation Script\n"
 printf "******************************************************\n"
-#sudo -i   hopefully not necessary  
+
 
 
 # Global variables
@@ -197,13 +195,14 @@ install_node_npm_nvm () {
 # Install Google Fonts
 get_and_install_google_fonts () {
     printf "**************************************************\n"
-    printf "Download and Install Google Fonts"
+    printf "Downloading and installing Google Fonts"
 #   Get http of all google fonts
 #   This was done manually by copying the download URL, via Falkon browser 
 #   having selected desired fonts at https://fonts.google.com/
 
-    readonly LOCAL_FONT_DIR="/usr/share/fonts/truetype"
-    readonly GOOGY_FONTS="/home/$CURRENT_USER/Downloads/googleFonts"
+    LOCAL_FONT_DIR=/usr/share/fonts/truetype
+    GOOGY_FONTS=/home/$CURRENT_USER/Downloads/googleFonts
+    
     mkdir -p $GOOGY_FONTS 
     mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
 
@@ -257,32 +256,27 @@ __EOF__
 
 # Copy fonts to correct directories
 
-    if [ $(which libreoffice) = "/usr/bin/libreoffice" ] 
-        then
-            sudo chmod 775 $LOCAL_FONT_DIR
-            cp -r * $LOCAL_FONT_DIR
-            sudo chmod 755 $LOCAL_FONT_DIR
-            printf "copied fonts to $LOCAL_FONT_DIR\n"
-    fi
 
+    if [ ! -d $LOCAL_FONT_DIR ] ; then mkdir -p $LOCAL_FONT_DIR ; fi
+    
+    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $LOCAL_FONT_DIR
+    printf "copied fonts to $LOCAL_FONT_DIR\n"
 
     if [ $(which libreoffice) = "/snap/*" ] 
         then
-            # cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
+            cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
             printf "WARNING : Code incomplete, need to put correct snap path in!\n"
     fi
 
     if [ $(which libreoffice) = "/.var/*" ] 
         then
-            # cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
+            cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
             printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
     fi
 
     popd
     rm -r $GOOGY_FONTS
-
 }
-
 
 
 
@@ -301,11 +295,17 @@ add_printer_driver () {
     printf "Do you agree? --> y\n"
     printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
 
-    wget -qO /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
-    gunzip /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
-    sudo bash /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1 DCP-J140W
-    rm /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
-    rm /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1
+    linux_brprinter_gz="linux-brprinter-installer-2.2.1-1.gz"
+    linux_brprinter_file="linux-brprinter-installer-2.2.1-1"
+    linux_brprinter_url="https://download.brother.com/welcome/dlf006893"
+    
+    downloads_dir="/home/$CURRENT_USER/Downloads"
+    
+    wget -qO $downloads_dir/$linux_brprinter_file $linux_brprinter_url/$linux_brprinter_gz
+    gunzip $downloads_dir/$linux_brprinter_gz
+    sudo bash $downloads_dir/$linux_brprinter_file DCP-J140W
+    rm $downloads_dir/$linux_brprinter_gz
+    rm $downloads_dir/$linux_brprinter_file
 }
 
 
@@ -508,7 +508,7 @@ setup_external_hd_ownership () {
     echo "Please ensured external drives are mounted?  enter y when done"
     read mount_prompt
     if [ $mount_prompt = "y" ]; then
-            lsblk | grep $USER
+            lsblk | grep $CURRENT_USER
             sudo chown -R $CURRENT_USER:$CURRENT_USER /$(lsblk | grep $CURRENT_USER | cut -d'/' -f2,3,4)
             # lsblk | grep $USER | cut -d'/' -f1,2,3,4
             # └─sdb3   8:19   0   4.4T  0 part /media/tom/F_Drive

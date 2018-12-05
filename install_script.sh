@@ -466,7 +466,7 @@ install_abricotine () {
     
     wget -O $downloads_dir/$abricotine_file $abricotine_url/$abricotine_file
     sudo dpkg -i $downloads_dir/$abricotine_file
-
+    sudo rm -r $downloads_dir/$abricotine_file
 }
 
 

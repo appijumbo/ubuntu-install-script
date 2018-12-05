@@ -366,7 +366,7 @@ install_etcher () {
     wget -O /opt/appimages/$etcher_version $etcher_url/$etcher_version
     mkdir -p /opt/appimages/Etcher/
     sudo unzip -qq -o /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
-    sudo chmod 774 -R $CURRENT_USER:$CURRENT_USER /opt/appimages/Etcher/*.AppImage
+    sudo chmod 774 -R /opt/appimages/Etcher/*.AppImage
     sudo rm /opt/appimages/$etcher_version
     
 }
@@ -402,7 +402,7 @@ Name=Git-it
 Type=Application
 Categories=Git;Github;Development
 Exec=~/.local/share/Git-it-linux-x64/Git-it %F
-Icon=git-it
+Icon=/usr/share/pixmaps/git-it.png
 MimeType=text/html;
 Keywords=Git;Github
 _EOF_

@@ -14,6 +14,8 @@ UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
 UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null 
 
+CURRENT_USER="$(whoami)"  # "$(who | cut -d' ' -f1)"
+printf "\nCurrent user is ----> '$CURRENT_USER'\n"
 
 
 check_if_distro_is_ubuntu () {
@@ -201,7 +203,7 @@ get_and_install_google_fonts () {
 #   having selected desired fonts at https://fonts.google.com/
 
     readonly LOCAL_FONT_DIR="/usr/share/fonts/truetype"
-    readonly GOOGY_FONTS="/home/$USER/Downloads/googleFonts"
+    readonly GOOGY_FONTS="/home/$CURRENT_USER/Downloads/googleFonts"
     mkdir -p $GOOGY_FONTS 
     mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
 
@@ -299,11 +301,11 @@ add_printer_driver () {
     printf "Do you agree? --> y\n"
     printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
 
-    wget -qO /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
-    gunzip /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
-    sudo bash /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1 DCP-J140W
-    rm /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
-    rm /home/$USER/Downloads/linux-brprinter-installer-2.2.1-1
+    wget -qO /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz https://download.brother.com/welcome/dlf006893/linux-brprinter-installer-2.2.1-1.gz
+    gunzip /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
+    sudo bash /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1 DCP-J140W
+    rm /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1.gz
+    rm /home/$CURRENT_USER/Downloads/linux-brprinter-installer-2.2.1-1
 }
 
 
@@ -321,13 +323,13 @@ install_gimp_filters() {
 
     # Copy 2.8 plugins to Gimp 2.10 Snap
     if [ -e "/snap/bin/gimp" ]; then
-    PLUGIN_SNAP_PATH=$(find /home/$USER/snap plug-ins | grep GIMP/2.10/plug-ins | head -1)
+    PLUGIN_SNAP_PATH=$(find /home/$CURRENT_USER/snap plug-ins | grep GIMP/2.10/plug-ins | head -1)
     cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
     fi
 
     # Copy 2.8 plugins to Gimp 2.10 Flatpak
-    if [ -e "/home/$USER/.var/app/org.gimp.GIMP" ]; then
-    PLUGIN_FLATPAK_PATH=$(find /home/$USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
+    if [ -e "/home/$CURRENT_USER/.var/app/org.gimp.GIMP" ]; then
+    PLUGIN_FLATPAK_PATH=$(find /home/$CURRENT_USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
     cp $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
     fi
 
@@ -363,8 +365,8 @@ install_etcher () {
     
     wget -O /opt/appimages/$etcher_version $etcher_url/$etcher_version
     mkdir -p /opt/appimages/Etcher/
-    sudo unzip /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
-    sudo chmod 774 -R /opt/appimages/Etcher/*.AppImage
+    sudo unzip -qq -o /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
+    sudo chmod 774 -R $CURRENT_USER:$CURRENT_USER /opt/appimages/Etcher/*.AppImage
     sudo rm /opt/appimages/$etcher_version
     
 }
@@ -377,9 +379,9 @@ install_git-it () {
     printf "**************************************************\n"
     printf "Download and Install Git-it git help tool\n"
     
-    local_share_dir="/home/$USER/.local/share"
-    usr_applications_dir="/usr/share/applications"
-    pixmaps_dir="/usr/share/pixmaps"
+    local_share_dir=/home/$CURRENT_USER/.local/share
+    usr_applications_dir=/usr/share/applications
+    pixmaps_dir=/usr/share/pixmaps
     
     git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0"
     git_it_file="Git-it-Linux-x64.zip"
@@ -389,8 +391,8 @@ install_git-it () {
 
     
     sudo wget -O $local_share_dir/$git_it_file $git_it_url/$git_it_file
-    sudo unzip $local_share_dir/$git_it_file -d $local_share_dir/Git-it-Linux-x64
-    
+    unzip -qq -o $local_share_dir/$git_it_file -d $local_share_dir
+    sudo chown -R $CURRENT_USER:$CURRENT_USER $local_share_dir/Git-it-Linux-x64
     sudo rm $local_share_dir/$git_it_file
     
     
@@ -419,8 +421,8 @@ install_ring () {
     ring_url="https://dl.ring.cx/ubuntu_18.04"
     ring_file="ring-all_amd64.deb"
     
-    wget -O /home/$USER/Downloads/$ring_file $ring_url/$ring_file
-    sudo dpkg -i /home/$USER/Downloads/$ring_file
+    wget -O /home/$CURRENT_USER/Downloads/$ring_file $ring_url/$ring_file
+    sudo dpkg -i /home/$CURRENT_USER/Downloads/$ring_file
 }
 
 
@@ -430,12 +432,12 @@ install_ring () {
 setup_updateme_alias () {
     printf "**************************************************\n"
     printf "Setup aliases\n"
-    if [ -f /home/$USER/.bash_aliases ]; then
-        cp /home/$USER/.bash_aliases /home/$USER/.bash_aliases_backup
-        else touch /home/$USER/.bash_aliases
+    if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
+        cp /home/$CURRENT_USER/.bash_aliases /home/$CURRENT_USER/.bash_aliases_backup
+        else touch /home/$CURRENT_USER/.bash_aliases
     fi
 
-    cat << _EOF_ >> /home/$USER/.bash_aliases
+    cat << _EOF_ >> /home/$CURRENT_USER/.bash_aliases
 alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
@@ -446,7 +448,7 @@ _EOF_
 
 
 backup_bashrc () {
-   cp /home/$USER/.bashrc /home/$USER/.bashrc_backup
+   cp /home/$USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
 }
 
 
@@ -454,8 +456,8 @@ install_abricotine () {
     printf "**************************************************\n"
     printf "Install Abricotine markdown editor\n"
     sudo apt install gvfs-bin
-    wget -O /home/$USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
-    sudo dpkg -i /home/$USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb
+    wget -O /home/$CURRENT_USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb https://github.com/brrd/Abricotine/releases/download/0.6.0/Abricotine-0.6.0-ubuntu-debian-x64.deb
+    sudo dpkg -i /home/$CURRENT_USER/Downloads/Abricotine-0.6.0-ubuntu-debian-x64.deb
 
 
 }
@@ -471,8 +473,8 @@ install_oh_my_zsh () {
     fi
     sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
     
-    ZSH_CUSTOM_THEMES=/home/$USER/.oh-my-zsh/custom/themes/
-    cp /home/$USER/.zshrc /home/$USER/.zshrc_backup
+    ZSH_CUSTOM_THEMES=/home/$CURRENT_USER/.oh-my-zsh/custom/themes/
+    cp /home/$USER/.zshrc /home/$CURRENT_USER/.zshrc_backup
     
     # install oh-my-zsh 'Node' theme
     wget -O $ZSH_CUSTOM_THEMES/node.zsh-theme https://raw.githubusercontent.com/skuridin/oh-my-zsh-node-theme/master/node.zsh-theme
@@ -482,13 +484,13 @@ install_oh_my_zsh () {
     ln -s "$ZSH_CUSTOM_THEMES/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_THEMES/spaceship.zsh-theme"
     
     # Set zsh theme to spaceship
-    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="spaceship"/g' /home/$USER/.zshrc
+    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="spaceship"/g' /home/$CURRENT_USER/.zshrc
     
     # Alternativley set theme to node.zsh
     # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="node.zsh-theme"/g' /home/$USER/.zshrc
     
     # make sure bash shell is the default though
-    chsh --shell /bin/bash $USER  
+    chsh --shell /bin/bash $CURRENT_USER
 }
 
 
@@ -500,7 +502,7 @@ setup_external_hd_ownership () {
     read mount_prompt
     if [ $mount_prompt = "y" ]; then
             lsblk | grep $USER
-            sudo chown -R ${USER}:${USER} /$(lsblk | grep $USER | cut -d'/' -f2,3,4)
+            sudo chown -R $CURRENT_USER:$CURRENT_USER /$(lsblk | grep $CURRENT_USER | cut -d'/' -f2,3,4)
             # lsblk | grep $USER | cut -d'/' -f1,2,3,4
             # └─sdb3   8:19   0   4.4T  0 part /media/tom/F_Drive
     fi
@@ -528,7 +530,7 @@ config_autostarts () {
     #   Exec=tommboy --search
     #   because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
 
-        TOMBOY_DESKTOP_CONFIG=/home/$USER/.config/autostart/tomboy.desktop
+        TOMBOY_DESKTOP_CONFIG=/home/$CURRENT_USER/.config/autostart/tomboy.desktop
         echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
 
     

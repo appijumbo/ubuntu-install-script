@@ -286,15 +286,6 @@ __EOF__
     
     sudo cp -r $GOOGY_FONTS/google_font_downloads/* $SHARE_FONT_DIR/truetype
     printf "copied fonts to $SHARE_FONT_DIR/truetype\n"
-    
-    # Note: Flatpaks use the same FHS standard directory ie /usr/share/fonts
-
-    # Snaps however have a seperate directory structure
-    if [ $(which libreoffice) = "/snap/*" ] 
-        then
-            cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
-            #ln -s $SNAP_LO_FONT_DIR $SHARE_FONT_DIR
-    fi
 
     popd
     rm -r $GOOGY_FONTS

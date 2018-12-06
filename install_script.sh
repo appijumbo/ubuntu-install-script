@@ -6,16 +6,31 @@ printf "Installation Script\n"
 printf "******************************************************\n"
 
 
+# ON STARTUP ALWAYS DO
+######################################################## 
 
-# Global variables
+# Define Global variables
+APPIMAGES_DIR=/opt/appimages
+FLAPAK_DIR=/var/lib/flatpak/app
+
+FLATPAK_REBOOT=/var/run/flatpak-requires-reboot  
+REBOOT=/var/run/reboot-required
+
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
 UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null 
 
-CURRENT_USER="$(who | cut -d' ' -f1)"
+CURRENT_USER="$(who | cut -d' ' -f1)"  
+# if installed with root privileges ie $sudo ./install_Script then $USER is root
 printf "\nCurrent user is ----> '$CURRENT_USER'\n"
 
 
+# Reset Flatpak reeboot signal
+if [ -f $FLATPAK_REBOOT ] ; then sudo rm $FLATPAK_REBOOT ; fi # stdrd reboot is auto reset
+
+
+
+# What distro is in use?
 check_if_distro_is_ubuntu () {
 if [ ! $(which apt) ]
     then
@@ -53,8 +68,7 @@ update_n_refresh () {
         fi
 
     # check if reboot is required
-    FILE="/var/run/reboot-required"    
-        if [ -f $FILE ]
+        if [ -f $REBOOT ]
             then 
                 echo "Just updated and upgraded REEBOOT REQUIRED !" && exit 1
         fi
@@ -67,10 +81,10 @@ update_n_refresh () {
 apt_installs () {
 
     # check if reboot is required
-    FILE="/var/run/reboot-required"    
-        if [ -f $FILE ]
+   
+        if [ -f $REBOOT ]
             then 
-                echo "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
+                printf "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
             else
                 sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack youtube-dl falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
         fi
@@ -92,7 +106,11 @@ ensure_snapd_flatpak_installed () {
         sudo add-apt-repository ppa:alexlarsson/flatpak
         sudo apt -y update
         sudo apt -y install flatpak
+        sudo apt install gnome-software-plugin-flatpak
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        sudo touch /var/run/flatpak-requires-reboot
+        printf "Just updated and upgraded REEBOOT REQUIRED !\n"
+        exit 1
     fi
 }
 
@@ -327,6 +345,8 @@ install_gimp_filters() {
     cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
     fi
 
+
+    
     # Copy 2.8 plugins to Gimp 2.10 Flatpak
     if [ -e "/home/$CURRENT_USER/.var/app/org.gimp.GIMP" ]; then
     PLUGIN_FLATPAK_PATH=$(find /home/$CURRENT_USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
@@ -335,6 +355,7 @@ install_gimp_filters() {
 
     # remove old gimp 2_8
     sudo apt -y remove gimp-plugin-registry
+    sudo apt -y purge gimp
 
 }
 

@@ -109,7 +109,7 @@ ensure_snapd_flatpak_installed () {
         sudo apt install gnome-software-plugin-flatpak
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo touch /var/run/flatpak-requires-reboot
-        printf "Just updated and upgraded REEBOOT REQUIRED !\n"
+        printf "Just installed Flatpaks - REEBOOT REQUIRED !\n"
         exit 1
     fi
 }
@@ -370,8 +370,8 @@ install_gimp_filters() {
 create_appimages_dir () {
     printf "**************************************************\n"
     printf "Create Appimage Directory\n"
-    sudo mkdir -p /opt/appimages
-    sudo chmod +xw /opt/appimages
+    sudo mkdir -p $APPIMAGES_DIR
+    sudo chmod +xw $APPIMAGES_DIR
 }
 
 
@@ -384,11 +384,11 @@ install_etcher () {
     etcher_version="etcher-electron-1.4.6-linux-x64.zip"
     etcher_url="https://github.com/balena-io/etcher/releases/download/v1.4.6/"
     
-    wget -O /opt/appimages/$etcher_version $etcher_url/$etcher_version
-    mkdir -p /opt/appimages/Etcher/
-    sudo unzip -qq -o /opt/appimages/$etcher_version -d /opt/appimages/Etcher/
-    sudo chmod 774 -R /opt/appimages/Etcher/*.AppImage
-    sudo rm /opt/appimages/$etcher_version
+    wget -O $APPIMAGES_DIR/$etcher_version $etcher_url/$etcher_version
+    mkdir -p $APPIMAGES_DIR/Etcher/
+    sudo unzip -qq -o $APPIMAGES_DIR/$etcher_version -d $APPIMAGES_DIR/Etcher/
+    sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
+    sudo rm $APPIMAGES_DIR/$etcher_version
     
 }
 

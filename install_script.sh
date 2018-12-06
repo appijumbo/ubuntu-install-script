@@ -286,11 +286,11 @@ __EOF__
             printf "WARNING : Code incomplete, need to put correct snap path in!\n"
     fi
 
-    if [ $(which libreoffice) = "/.var/*" ] 
-        then
-            cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
-            printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
-    fi
+#     if [ $(which libreoffice) = "/.var/*" ] 
+#         then
+#             cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
+#             printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
+#     fi
 
     popd
     rm -r $GOOGY_FONTS

@@ -10,11 +10,17 @@ printf "******************************************************\n"
 ######################################################## 
 
 # Define Global variables
+
 APPIMAGES_DIR=/opt/appimages
-FLAPAK_DIR=/var/lib/flatpak/app
+FLATPAK_DIR=/var/lib/flatpak/app
 
 FLATPAK_REBOOT=/var/run/flatpak-requires-reboot  
 REBOOT=/var/run/reboot-required
+
+LOCAL_FONT_DIR=/usr/share/fonts/truetype  
+# /usr/local/share/fonts is where fonts should normally be
+# according to FHS (https://bit.ly/2AVScrv) 
+
 
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
@@ -218,7 +224,7 @@ get_and_install_google_fonts () {
 #   This was done manually by copying the download URL, via Falkon browser 
 #   having selected desired fonts at https://fonts.google.com/
 
-    LOCAL_FONT_DIR=/usr/share/fonts/truetype
+    
     GOOGY_FONTS=/home/$CURRENT_USER/Downloads/googleFonts
     
     mkdir -p $GOOGY_FONTS 
@@ -274,23 +280,19 @@ __EOF__
 
 # Copy fonts to correct directories
 
-
+    # create a FHS stadard font directory if dosn't exist (though this is unlikley)
     if [ ! -d $LOCAL_FONT_DIR ] ; then mkdir -p $LOCAL_FONT_DIR ; fi
     
     sudo cp -r $GOOGY_FONTS/google_font_downloads/* $LOCAL_FONT_DIR
     printf "copied fonts to $LOCAL_FONT_DIR\n"
+    
+    # Note: Flatpaks use the same FHS standard directory ie /usr/share/fonts
 
+    # Snaps however have a seperate directory structure
     if [ $(which libreoffice) = "/snap/*" ] 
         then
             cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
-            printf "WARNING : Code incomplete, need to put correct snap path in!\n"
     fi
-
-#     if [ $(which libreoffice) = "/.var/*" ] 
-#         then
-#             cp -r /home/$USERS/Downloads/googleFonts/* /.var/app/*libreoffice/share/fonts/truetype
-#             printf "WARNING : Code incomplete, need to put correct Flatpak ./var path in!\n"
-#     fi
 
     popd
     rm -r $GOOGY_FONTS

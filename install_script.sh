@@ -17,9 +17,9 @@ FLATPAK_DIR=/var/lib/flatpak/app
 FLATPAK_REBOOT=/var/run/flatpak-requires-reboot  
 REBOOT=/var/run/reboot-required
 
-LOCAL_FONT_DIR=/usr/share/fonts/truetype  
-# /usr/local/share/fonts is where fonts should normally be
-# according to FHS (https://bit.ly/2AVScrv) 
+SNAP_LO_FONT_DIR=/snap/libreoffice/current/usr/share/fonts
+TRUETYPE_FONT_DIR=/usr/share/fonts/truetype  
+# see FHS (https://bit.ly/2AVScrv) 
 
 
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
@@ -225,6 +225,7 @@ get_and_install_google_fonts () {
 #   having selected desired fonts at https://fonts.google.com/
 
     
+    
     GOOGY_FONTS=/home/$CURRENT_USER/Downloads/googleFonts
     
     mkdir -p $GOOGY_FONTS 
@@ -281,10 +282,10 @@ __EOF__
 # Copy fonts to correct directories
 
     # create a FHS stadard font directory if dosn't exist (though this is unlikley)
-    if [ ! -d $LOCAL_FONT_DIR ] ; then mkdir -p $LOCAL_FONT_DIR ; fi
+    if [ ! -d $TRUETYPE_FONT_DIR ] ; then mkdir -p $TRUETYPE_FONT_DIR ; fi
     
-    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $LOCAL_FONT_DIR
-    printf "copied fonts to $LOCAL_FONT_DIR\n"
+    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $TRUETYPE_FONT_DIR
+    printf "copied fonts to $TRUETYPE_FONT_DIR\n"
     
     # Note: Flatpaks use the same FHS standard directory ie /usr/share/fonts
 

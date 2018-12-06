@@ -18,7 +18,7 @@ FLATPAK_REBOOT=/var/run/flatpak-requires-reboot
 REBOOT=/var/run/reboot-required
 
 SNAP_LO_FONT_DIR=/snap/libreoffice/current/usr/share/fonts
-TRUETYPE_FONT_DIR=/usr/share/fonts/truetype  
+SHARE_FONT_DIR=/usr/share/fonts
 # see FHS (https://bit.ly/2AVScrv) 
 
 
@@ -282,10 +282,10 @@ __EOF__
 # Copy fonts to correct directories
 
     # create a FHS stadard font directory if dosn't exist (though this is unlikley)
-    if [ ! -d $TRUETYPE_FONT_DIR ] ; then mkdir -p $TRUETYPE_FONT_DIR ; fi
+    if [ ! -d $SHARE_FONT_DIR/truetype ] ; then mkdir -p $SHARE_FONT_DIR/truetype ; fi
     
-    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $TRUETYPE_FONT_DIR
-    printf "copied fonts to $TRUETYPE_FONT_DIR\n"
+    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $SHARE_FONT_DIR/truetype
+    printf "copied fonts to $SHARE_FONT_DIR/truetype\n"
     
     # Note: Flatpaks use the same FHS standard directory ie /usr/share/fonts
 
@@ -293,6 +293,7 @@ __EOF__
     if [ $(which libreoffice) = "/snap/*" ] 
         then
             cp -r /home/$USERS/Downloads/googleFonts/* /snap/libreoffice/share/fonts/truetype
+            #ln -s $SNAP_LO_FONT_DIR $SHARE_FONT_DIR
     fi
 
     popd

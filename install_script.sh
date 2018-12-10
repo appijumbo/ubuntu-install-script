@@ -334,22 +334,22 @@ install_gimp_filters() {
     sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
     fi
 
-    # Copy 2.8 plugins to Gimp 2.10 Snap
-    if [ -e "/snap/bin/gimp" ]; then
-    PLUGIN_SNAP_PATH=$(find /home/$CURRENT_USER/snap plug-ins | grep GIMP/2.10/plug-ins | head -1)
-    cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
-    fi
+    # Simplistically we could copy 2.8 plugins to Gimp 2.10 Snap ie.
+#     if [ -e "/snap/bin/gimp" ]; then
+#     PLUGIN_SNAP_PATH=/snap/gimp/current/usr/lib/gimp/2.0/plug-ins
+#     sudo cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
+#     fi
 
-
+    # BUT this won't work because it's impossible to change the current of a snap without rebuilding a snap.
     
     # Copy 2.8 plugins to Gimp 2.10 Flatpak
+    PLUGIN_FLATPAK_PATH=/var/lib/flatpak/app/org.gimp.GIMP/current/active/files/lib/gimp/2.0/plug-ins
     if [ -e "/home/$CURRENT_USER/.var/app/org.gimp.GIMP" ]; then
-    PLUGIN_FLATPAK_PATH=$(find /home/$CURRENT_USER/.var plug-ins | grep GIMP/2.10/plug-ins | head -1)
-    cp $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
+    sudo chown $CURRENT_USER:$CURRENT_USER -R $PLUGIN_FLATPAK_PATH
+    cp -r $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
     fi
 
     # remove old gimp 2_8
-    sudo apt -y remove gimp-plugin-registry
     sudo apt -y purge gimp
 
 }

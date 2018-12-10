@@ -133,7 +133,7 @@ install_many_snaps () {
 #       hence the loop
     printf "**************************************************\n"
     printf "Installing Snaps\n"
-    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" gimp darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
         do
@@ -160,7 +160,7 @@ install_many_flatpaks () {
 # Install Flatpak's
     printf "**************************************************\n"
     printf "Installing Flatpaks\n"
-    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
+    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.gimp.GIMP org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
 
 
     for index in "${FLATPAKS[@]}"

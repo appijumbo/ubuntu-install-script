@@ -458,7 +458,7 @@ alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
 alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
-alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update"
+alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
 _EOF_
 }
 
@@ -484,6 +484,22 @@ install_abricotine () {
     sudo dpkg -i $downloads_dir/$abricotine_file
     sudo rm -r $downloads_dir/$abricotine_file
 }
+
+
+
+
+install_youtubedl () {
+    printf "**************************************************\n"
+    printf "Install Youtube-dl\n"
+    
+    # Prefered over an apt install from Ubuntu as the Ubuntu repo is not up-to-date
+    sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/bin/youtube-dl
+    sudo chmod a+rx /usr/bin/youtube-dl
+
+    # Also added "sudo youtube-dl -U" to alias 'updateme'
+
+}
+
 
 
 install_oh_my_zsh () {
@@ -578,6 +594,7 @@ create_appimages_dir
 install_etcher
 install_git-it
 install_abricotine
+install_youtubedl
 install_gimp_filters
 get_and_install_google_fonts
 install_oh_my_zsh

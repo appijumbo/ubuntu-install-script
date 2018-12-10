@@ -379,8 +379,8 @@ install_etcher () {
     etcher_version="etcher-electron-1.4.6-linux-x64.zip"
     etcher_url="https://github.com/balena-io/etcher/releases/download/v1.4.6/"
     
-    wget -O $APPIMAGES_DIR/$etcher_version $etcher_url/$etcher_version
-    mkdir -p $APPIMAGES_DIR/Etcher/
+    sudo wget -O $APPIMAGES_DIR/$etcher_version $etcher_url/$etcher_version
+    sudo mkdir -p $APPIMAGES_DIR/Etcher/
     sudo unzip -qq -o $APPIMAGES_DIR/$etcher_version -d $APPIMAGES_DIR/Etcher/
     sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
     sudo rm $APPIMAGES_DIR/$etcher_version

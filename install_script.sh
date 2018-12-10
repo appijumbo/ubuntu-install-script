@@ -395,7 +395,7 @@ install_git-it () {
     printf "**************************************************\n"
     printf "Download and Install Git-it git help tool\n"
     
-    local_share_dir=/home/$CURRENT_USER/.local/share
+    usr_share=/usr/share
     usr_applications_dir=/usr/share/applications
     pixmaps_dir=/usr/share/pixmaps
     
@@ -405,28 +405,31 @@ install_git-it () {
     git_it_png_url="https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/"
     
 
+    sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share
+    sudo wget -O $usr_share/$git_it_file $git_it_url/$git_it_file
+    unzip -qq -o $usr_share/$git_it_file -d $usr_share
+    sudo chown -R $CURRENT_USER:$CURRENT_USER $usr_share/Git-it-Linux-x64
+    sudo rm $usr_share/$git_it_file
+    sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share/applications
     
-    sudo wget -O $local_share_dir/$git_it_file $git_it_url/$git_it_file
-    unzip -qq -o $local_share_dir/$git_it_file -d $local_share_dir
-    sudo chown -R $CURRENT_USER:$CURRENT_USER $local_share_dir/Git-it-Linux-x64
-    sudo rm $local_share_dir/$git_it_file
-    
-    
-    cat << _EOF_ > $usr_applications_dir/git-it.desktop
+    cat << _EOF_ > $usr_share/applications/Git-it.desktop
 [Desktop Entry]
-Name=Git-it
+Name=Gitit
 Type=Application
-Categories=Git;Github;Development
-Exec=~/.local/share/Git-it-linux-x64/Git-it %F
-Icon=/usr/share/pixmaps/git-it.png
+Comment=Guide for Git use
+Categories=Git;Github
+Exec=/usr/share/Git-it-linux-x64/Git-it %F
+Icon=/usr/share/Git-it-linux-x64/icons/git-it-s128.png
 MimeType=text/html;
 Keywords=Git;Github
 _EOF_
     
-    sudo wget -O $pixmaps_dir/git-it.png $git_it_png_url/git-it.png
+    
+    mkdir -p $usr_share/Git-it-Linux-x64/icons
+    sudo wget -O $usr_share/Git-it-Linux-x64/icons/git-it.png $git_it_png_url/git-it.png
+    sudo convert $usr_share/Git-it-Linux-x64/icons/git-it.png -resize x128 $usr_share/Git-it-Linux-x64/icons/git-it-s128.png
 
 }
-
 
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version

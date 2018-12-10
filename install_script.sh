@@ -488,7 +488,7 @@ install_abricotine () {
 
 
 
-install_youtubedl () {
+install_youtube-dl () {
     printf "**************************************************\n"
     printf "Install Youtube-dl\n"
     
@@ -594,7 +594,7 @@ create_appimages_dir
 install_etcher
 install_git-it
 install_abricotine
-install_youtubedl
+install_youtube-dl
 install_gimp_filters
 get_and_install_google_fonts
 install_oh_my_zsh

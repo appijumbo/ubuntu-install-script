@@ -510,8 +510,7 @@ install_oh_my_zsh () {
     printf "Install oh-my-zsh shell\n"
     # ensure zsh and power fonts (required for some zsh themes) is installed
     if [ ! $(which zsh) ]; then 
-        sudo apt install zsh
-        sudo apt-get install fonts-powerline
+        sudo apt -y install zsh fonts-powerline
     fi
     sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
     

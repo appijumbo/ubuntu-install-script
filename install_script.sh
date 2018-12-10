@@ -293,34 +293,6 @@ __EOF__
 
 
 
-# PRINTER INSTALLATION - Brother DCPJ-140W 
-add_printer_driver () {
-
-    printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
-    printf "****************************************************************\n"
-    printf "You are going to install following packages.. --> y\n"
-    printf "Brother License Agreement --> y\n"
-    printf "Do you agree? --> y\n"
-    printf "Will you specify the Device URI? --> y\n"
-    printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
-    printf "Test Print? [y/N] --> choose y or n\n"
-    printf "Do you agree? --> y\n"
-    printf "Do you agree? --> y\n"
-    printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
-
-    linux_brprinter_gz="linux-brprinter-installer-2.2.1-1.gz"
-    linux_brprinter_file="linux-brprinter-installer-2.2.1-1"
-    linux_brprinter_url="https://download.brother.com/welcome/dlf006893"
-    
-    downloads_dir="/home/$CURRENT_USER/Downloads"
-    
-    wget -qO $downloads_dir/$linux_brprinter_file $linux_brprinter_url/$linux_brprinter_gz
-    gunzip $downloads_dir/$linux_brprinter_gz
-    sudo bash $downloads_dir/$linux_brprinter_file DCP-J140W
-    rm $downloads_dir/$linux_brprinter_gz
-    rm $downloads_dir/$linux_brprinter_file
-}
-
 
 
 
@@ -447,28 +419,7 @@ install_ring () {
 
 
 
-# Setup 'updateme' alias
-setup_updateme_alias () {
-    printf "**************************************************\n"
-    printf "Setup aliases\n"
-    if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
-        cp /home/$CURRENT_USER/.bash_aliases /home/$CURRENT_USER/.bash_aliases_backup
-        else touch /home/$CURRENT_USER/.bash_aliases
-    fi
 
-    cat << _EOF_ >> /home/$CURRENT_USER/.bash_aliases
-alias cdF_="cd /media/tomdom/F_Drive"
-alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
-alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
-alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
-alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
-_EOF_
-}
-
-
-backup_bashrc () {
-   cp /home/$CURRENT_USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
-}
 
 
 install_abricotine () {
@@ -533,6 +484,79 @@ install_oh_my_zsh () {
     # make sure bash shell is the default though
     chsh --shell /bin/bash $CURRENT_USER
 }
+
+
+
+
+
+
+backup_bashrc () {
+   cp /home/$CURRENT_USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
+}
+
+
+
+
+
+# Setup 'updateme' alias
+setup_updateme_alias () {
+    printf "**************************************************\n"
+    printf "Setup aliases\n"
+    if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
+        cp /home/$CURRENT_USER/.bash_aliases /home/$CURRENT_USER/.bash_aliases_backup
+        else touch /home/$CURRENT_USER/.bash_aliases
+    fi
+
+    cat << _EOF_ >> /home/$CURRENT_USER/.bash_aliases
+alias cdF_="cd /media/tomdom/F_Drive"
+alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
+alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
+alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
+alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
+_EOF_
+}
+
+
+
+
+
+
+
+
+
+
+
+# PRINTER INSTALLATION - Brother DCPJ-140W 
+add_printer_driver () {
+
+    printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
+    printf "****************************************************************\n"
+    printf "You are going to install following packages.. --> y\n"
+    printf "Brother License Agreement --> y\n"
+    printf "Do you agree? --> y\n"
+    printf "Will you specify the Device URI? --> y\n"
+    printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
+    printf "Test Print? [y/N] --> choose y or n\n"
+    printf "Do you agree? --> y\n"
+    printf "Do you agree? --> y\n"
+    printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
+
+    linux_brprinter_gz="linux-brprinter-installer-2.2.1-1.gz"
+    linux_brprinter_file="linux-brprinter-installer-2.2.1-1"
+    linux_brprinter_url="https://download.brother.com/welcome/dlf006893"
+    
+    downloads_dir=/home/$CURRENT_USER/Downloads
+    
+    wget -qO $downloads_dir/$linux_brprinter_gz $linux_brprinter_url/$linux_brprinter_gz
+    gunzip $downloads_dir/$linux_brprinter_gz
+    sudo bash $downloads_dir/$linux_brprinter_file DCP-J140W
+    rm $downloads_dir/$linux_brprinter_gz
+    rm $downloads_dir/$linux_brprinter_file
+}
+
+
+
+
 
 
 

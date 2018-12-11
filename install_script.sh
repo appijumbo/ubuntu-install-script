@@ -133,7 +133,7 @@ install_many_snaps () {
 #       hence the loop
     printf "**************************************************\n"
     printf "Installing Snaps\n"
-    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" darktable postgresql10 obs-studio handbrake-jz vidcutter youtube-dl-casept libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" darktable postgresql10 obs-studio handbrake-jz vidcutter libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
     for index in "${SNAPS_[@]}"
         do

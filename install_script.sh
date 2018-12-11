@@ -3,6 +3,8 @@
 # Add report functions
 . install_report.sh
 
+touch report_list
+
 clear
 
 printf "******************************************************\n"
@@ -38,7 +40,7 @@ printf "\nCurrent user is ----> '$CURRENT_USER'\n"
 # Reset Flatpak reeboot signal
 if [ -f $FLATPAK_REBOOT ] ; then sudo rm $FLATPAK_REBOOT ; fi # stdrd reboot is auto reset
 
-create_list
+
 
 # What distro is in use?
 check_if_distro_is_ubuntu(){
@@ -631,7 +633,7 @@ update_n_refresh
 
 
 
-print_list
+print_report
 
 
 exit 0

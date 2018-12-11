@@ -608,26 +608,26 @@ config_autostarts(){
 check_if_distro_is_ubuntu
 get_distro_name
 update_n_refresh
-apt_installs
-update_n_refresh
-setup_firewall
-ensure_snapd_flatpak_installed
-install_many_snaps
-install_many_flatpaks
-install_node_npm_nvm
-create_appimages_dir
-install_etcher
-install_git-it
-install_abricotine
-install_youtube-dl
-install_gimp_filters
-get_and_install_google_fonts
-install_oh_my_zsh
-backup_bashrc
-setup_updateme_alias
-add_printer_driver
-setup_external_hd_ownership
-config_autostarts
+# apt_installs
+# update_n_refresh
+# setup_firewall
+# ensure_snapd_flatpak_installed
+# install_many_snaps
+# install_many_flatpaks
+# install_node_npm_nvm
+# create_appimages_dir
+# install_etcher
+# install_git-it
+# install_abricotine
+# install_youtube-dl
+# install_gimp_filters
+# get_and_install_google_fonts
+# install_oh_my_zsh
+# backup_bashrc
+# setup_updateme_alias
+# add_printer_driver
+# setup_external_hd_ownership
+# config_autostarts
 
 
 

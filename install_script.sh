@@ -37,7 +37,7 @@ if [ -f $FLATPAK_REBOOT ] ; then sudo rm $FLATPAK_REBOOT ; fi # stdrd reboot is 
 
 
 # What distro is in use?
-check_if_distro_is_ubuntu () {
+check_if_distro_is_ubuntu(){
 if [ ! $(which apt) ]
     then
         clear
@@ -52,7 +52,7 @@ fi
 }
 
 
-get_distro_name () {
+get_distro_name(){
     #   Instead of grepping via the output from a pipe ie
     #   cat /usr/lib/os-release | grep -E "^NAME=" etc..
     #   'grep' against a pattern and a location, hence
@@ -65,7 +65,7 @@ get_distro_name () {
 
 
 # Check system is up to date
-update_n_refresh () {
+update_n_refresh(){
     printf "******************************************************\n"
     printf "*\n* Checking up-to-date\n"
         if [ "$distro_type" = "KDE neon" ]
@@ -84,7 +84,7 @@ update_n_refresh () {
 
 
 # Traditional apt installs
-apt_installs () {
+apt_installs(){
 
     # check if reboot is required
    
@@ -102,7 +102,7 @@ apt_installs () {
 
 
 # Ensure Snap and Flatpak tools are installed
-ensure_snapd_flatpak_installed () {
+ensure_snapd_flatpak_installed(){
     if [ ! $(which snap) ]; then
         sudo apt update
         sudo apt -y install snapd
@@ -123,7 +123,7 @@ ensure_snapd_flatpak_installed () {
 
 
 
-install_many_snaps () {
+install_many_snaps(){
 # Install Snap's
 
 # Note: Although we can install Snap eg apps 'foo --classic' 'bar --beta'etc i.e.
@@ -156,7 +156,7 @@ install_many_snaps () {
 
 
 
-install_many_flatpaks () {
+install_many_flatpaks(){
 # Install Flatpak's
     printf "**************************************************\n"
     printf "Installing Flatpaks\n"
@@ -176,7 +176,7 @@ install_many_flatpaks () {
 
 
 # Setup Gufw
-setup_firewall () {
+setup_firewall(){
     printf "**************************************************\n"
     printf "Setup Firewall\n"
     sudo ufw enable
@@ -190,7 +190,7 @@ setup_firewall () {
 
 
 
-install_node_npm_nvm () {
+install_node_npm_nvm(){
     printf "**************************************************\n"
     printf "Check node installation is working\n"
     
@@ -217,7 +217,7 @@ install_node_npm_nvm () {
 
 
 # Install Google Fonts
-get_and_install_google_fonts () {
+get_and_install_google_fonts(){
     printf "**************************************************\n"
     printf "Downloading and installing Google Fonts"
 #   Get http of all google fonts
@@ -298,7 +298,7 @@ __EOF__
 
 # GIMP filters from Gimp 2.8 to 2.10
 
-install_gimp_filters() {
+install_gimp_filters(){
     printf "**************************************************\n"
     printf "Install Gimp 2.8 filter to Gimp 2.10\n"
     PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
@@ -334,7 +334,7 @@ install_gimp_filters() {
 
 
 # create Appimages directory in /opt
-create_appimages_dir () {
+create_appimages_dir(){
     printf "**************************************************\n"
     printf "Create Appimage Directory\n"
     sudo mkdir -p $APPIMAGES_DIR
@@ -344,7 +344,7 @@ create_appimages_dir () {
 
 
 # Install Etcher via Appimages
-install_etcher () {
+install_etcher(){
     printf "**************************************************\n"
     printf "Installing Etcher Appimage 1.4.6\n"
     
@@ -363,7 +363,7 @@ install_etcher () {
 
 
 # Install Git-it
-install_git-it () {
+install_git-it(){
     printf "**************************************************\n"
     printf "Download and Install Git-it git help tool\n"
     
@@ -405,7 +405,7 @@ _EOF_
 
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
-install_ring () {
+install_ring(){
     printf "**************************************************\n"
     printf "Download and Install GNU Ring\n"
     
@@ -422,7 +422,7 @@ install_ring () {
 
 
 
-install_abricotine () {
+install_abricotine(){
     printf "**************************************************\n"
     printf "Install Abricotine markdown editor\n"
     
@@ -442,7 +442,7 @@ install_abricotine () {
 
 
 
-install_youtube-dl () {
+install_youtube-dl(){
     printf "**************************************************\n"
     printf "Install Youtube-dl\n"
     
@@ -456,7 +456,7 @@ install_youtube-dl () {
 
 
 
-install_oh_my_zsh () {
+install_oh_my_zsh(){
     printf "**************************************************\n"
     printf "Install oh-my-zsh shell\n"
     # ensure zsh and power fonts (required for some zsh themes) is installed
@@ -490,7 +490,7 @@ install_oh_my_zsh () {
 
 
 
-backup_bashrc () {
+backup_bashrc(){
    cp /home/$CURRENT_USER/.bashrc /home/$CURRENT_USER/.bashrc_backup
 }
 
@@ -499,7 +499,7 @@ backup_bashrc () {
 
 
 # Setup 'updateme' alias
-setup_updateme_alias () {
+setup_updateme_alias(){
     printf "**************************************************\n"
     printf "Setup aliases\n"
     if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
@@ -521,13 +521,8 @@ _EOF_
 
 
 
-
-
-
-
-
 # PRINTER INSTALLATION - Brother DCPJ-140W 
-add_printer_driver () {
+add_printer_driver(){
 
     printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
     printf "****************************************************************\n"
@@ -561,7 +556,7 @@ add_printer_driver () {
 
 
 # Check external drives are owned by the current owner and group
-setup_external_hd_ownership () {
+setup_external_hd_ownership(){
 
     echo "Please ensured external drives are mounted?  enter y when done"
     read mount_prompt
@@ -578,7 +573,7 @@ setup_external_hd_ownership () {
 
 
 
-config_autostarts () {
+config_autostarts(){
 
     # Yakuake
     #   Set yakuake to autostart but closed

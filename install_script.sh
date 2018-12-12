@@ -3,7 +3,7 @@
 # Add report functions
 . install_report.sh
 
-touch report_list
+
 
 clear
 
@@ -67,6 +67,8 @@ get_distro_name(){
     distro_name="${distro_name#\"}"     # remove trailing quote
     printf "******************************************************\n"
     printf "This distro is $distro_name\n"
+    
+    echo "This distro is $distro_name\n" >> report_list
 }
 
 
@@ -90,19 +92,37 @@ update_n_refresh(){
 
 
 # Traditional apt installs
+# apt_installs(){
+# 
+#     # check if reboot is required
+#    
+#         if [ -f $REBOOT ]
+#             then 
+#                 printf "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
+#             else
+#                 sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
+#         fi
+#     
+# }
+
 apt_installs(){
 
     # check if reboot is required
    
+    APT_LIST=(python curl chromium-browser)
         if [ -f $REBOOT ]
             then 
                 printf "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
             else
-                sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
+                for index in "${APT_LIST[@]}"
+                    do
+                        sudo apt -y install $index
+                        if [ $(which $index) ]; then echo "$index   Apt" >> report_list; fi
+
+                    done
         fi
     
 }
-
 
 
 
@@ -117,14 +137,19 @@ ensure_snapd_flatpak_installed(){
     if [ ! $(which flatpak) ]; then
         sudo add-apt-repository ppa:alexlarsson/flatpak
         sudo apt -y update
-        sudo apt -y install flatpak
-        sudo apt install gnome-software-plugin-flatpak
+        sudo apt -y install flatpak gnome-software-plugin-flatpak
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo touch /var/run/flatpak-requires-reboot
         printf "Just installed Flatpaks - REEBOOT REQUIRED !\n"
         exit 1
     fi
+    
+    
+    if [ $(which flatpak) ] ; then echo "Flatpak installed" >> report_list ; fi
+    if [ $(which snap) ]  ; then echo "Snap installed" >> report_list ; fi
 }
+
+
 
 
 
@@ -152,8 +177,8 @@ install_many_snaps(){
                 # Also all errors are by deafult sent to dev/null because
                 # they are likley to be 'plugin snap name empty' errors
                 # due to the snap eg. 'node' not having an external-media connection.
+            
         done
-        
             
     printf "Snap Apps Installed\n"
     snap list
@@ -177,7 +202,6 @@ install_many_flatpaks(){
     printf "Flatpak Apps Installed\n"
     flatpak list
     printf "\n**************************************************\n"
-    
 }
 
 
@@ -295,6 +319,12 @@ __EOF__
 
     popd
     rm -r $GOOGY_FONTS
+    
+    if [ $(which yarn) ]; then echo "Yarn" >> report_list ; fi
+    
+    # assume if font 'Zilla_Slab' exists (as last to be downloaded)
+    # then Google Fonts are installed
+    
 }
 
 
@@ -329,7 +359,6 @@ install_gimp_filters(){
 
     # remove old gimp 2_8
     sudo apt -y purge gimp
-
 }
 
 
@@ -362,7 +391,6 @@ install_etcher(){
     sudo unzip -qq -o $APPIMAGES_DIR/$etcher_version -d $APPIMAGES_DIR/Etcher/
     sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
     sudo rm $APPIMAGES_DIR/$etcher_version
-    
 }
 
 
@@ -406,8 +434,8 @@ _EOF_
     mkdir -p $usr_share/Git-it-Linux-x64/icons
     sudo wget -O $usr_share/Git-it-Linux-x64/icons/git-it.png $git_it_png_url/git-it.png
     sudo convert $usr_share/Git-it-Linux-x64/icons/git-it.png -resize x128 $usr_share/Git-it-Linux-x64/icons/git-it-s128.png
-
 }
+
 
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
@@ -457,7 +485,6 @@ install_youtube-dl(){
     sudo chmod a+rx /usr/bin/youtube-dl
 
     # Also added "sudo youtube-dl -U" to alias 'updateme'
-
 }
 
 
@@ -572,7 +599,6 @@ setup_external_hd_ownership(){
             # lsblk | grep $USER | cut -d'/' -f1,2,3,4
             # └─sdb3   8:19   0   4.4T  0 part /media/tom/F_Drive
     fi
-
 }
 
 
@@ -587,7 +613,6 @@ config_autostarts(){
 
         qdbus org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
 
-
     # Tomboy notes
     #   Set tomboynotes to autostart
     #   Tomboynotes isn't a KDE app, its mono so qdbus won't work
@@ -598,13 +623,38 @@ config_autostarts(){
 
         TOMBOY_DESKTOP_CONFIG=/home/$CURRENT_USER/.config/autostart/tomboy.desktop
         echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
-
-    
         printf "\n--> DONE\n"
 }
 
+
+
+
+
+
+make_report(){
+
+    report_snap_list
+    report_flatpak_list
+    report_gufw
+    report_node
+    report_google_fonts
+    report_gimp
+    report_appimages
+    report_gitit
+    report_ring
+    report_abricotine
+    report_youtube-dl
+    report_oh-my-zsh
+    report_aliases
+    report_printer
+    report_autostarts
+}
+
+
+
+
 #######################################################################
-############################   MAIN  ##################################
+############################   MAIN   #################################
 
 
 check_if_distro_is_ubuntu
@@ -631,30 +681,10 @@ update_n_refresh
 # setup_external_hd_ownership
 # config_autostarts
 
-
-
-print_report
+clear_lists
+make_report
+display_report
 
 
 exit 0
 
-
-
-#######################################################################
-#----------------------------------------------------------------------
-# ---> NOT USING THIS CODE BUT KEEP JUST IN CASE FOR FUTURE
-
-# TO GET A COMPLETE .json list OF ALL GOOGLES FONTS
-# -------------------------------------------------
-# KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # First get an API key and substitute in here
-# OUTPUT_FILE="./static/googleFonts.json"
-# mkdir -p ./static
-
-# echo '[' > $OUTPUT_FILE
-
-# curl -s "https://www.googleapis.com/webfonts/v1/webfonts?key=$KEY&sort=alpha" | \
-#   sed -n 's/ *"family": "\(.*\)",/  "\1",/p' | \
-#   sed '$s/\(.*\),/\1/' >> $OUTPUT_FILE
-
-# echo ']' >> $OUTPUT_FILE
-# #----------------------------------------------------------------------

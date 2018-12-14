@@ -1,6 +1,8 @@
 #!/bin/bash
 
 CURRENT_USER="$(who | cut -d' ' -f1)"  
+distro_name=""
+gfuw_installed=""
 
 # This contains the functions to provide a report for the installation script
 
@@ -9,6 +11,26 @@ touch report_list
 clear_lists(){
     rm alias_list_raw flat_list_raw snap_list_raw
 }
+
+
+
+report_restart(){
+    
+    echo -e "\n\n\n**************************************************\n*******************  RESTARTED *******************\n\n\n" >> report_list
+}
+
+
+
+print_distro_name(){
+    echo -e "This distro is $distro_name\n"
+}
+
+
+
+report_distro_name(){
+    echo -e "This distro is $distro_name\n" >> report_list
+}
+
 
 # Flatpak seems to have no standard labeling 
 # gimp.GIMP, gottcode.FocusWriter, bitwarden.desktop, gnome.Boxes etc...
@@ -49,6 +71,15 @@ sed -i '/core*/d' ./snap_list_raw
 report_snap_list(){
 get_snap_list
 snap_list_raw >> report_list
+}
+
+
+
+check_gufw_installed(){
+    if [ $(which gufw) ] 
+        then gfuw_installed="yes"
+        else gfuw_installed="no"
+
 }
 
 
@@ -165,15 +196,21 @@ report_aliases(){
 
 
 
+check_printer_status(){
+
+    if [ $(lpstat -p | grep -E "lpstat: No destinations added.") ]
+        then return false
+        else return true
+    fi
+
+
+}
+
 report_printer(){
 
-    printer_name=$(lpstat -p | awk '{print $2}')
-
-    
-    if [ $(lpstat -p | grep -E "lpstat: No destinations added.") ]
-        
-        then echo "No Printer attached  :   Printer" >> report_list
-        else echo "$printer_name    :   Printer" >> report_list
+    if [ check_printer_status ]
+        then echo "$(lpstat -p | awk '{print $2}')    :   Printer" >> report_list
+        else echo "No Printer attached  :   Printer" >> report_list
         
     fi
 }

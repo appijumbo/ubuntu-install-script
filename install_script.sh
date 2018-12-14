@@ -36,6 +36,25 @@ CURRENT_USER="$(who | cut -d' ' -f1)"
 # if installed with root privileges ie $sudo ./install_Script then $USER is root
 printf "\nCurrent user is ----> '$CURRENT_USER'\n"
 
+distro_name=""
+
+
+
+get_distro_name(){
+
+    #   Instead of grepping via the output from a pipe ie
+    #   cat /usr/lib/os-release | grep -E "^NAME=" etc..
+    #   'grep' against a pattern and a location, hence
+    
+    distro_n="$(grep ^NAME /etc/os-release | cut -d'=' -f2)"
+    distro_name_a="${distro_n%\"}"     # remove leading quote
+    distro_name="${distro_name_a#\"}"     # remove trailing quote
+    
+     # returned via global variable 'distro_name'
+}
+
+
+
 
 # Reset Flatpak reeboot signal
 if [ -f $FLATPAK_REBOOT ] ; then sudo rm $FLATPAK_REBOOT ; fi # stdrd reboot is auto reset
@@ -58,24 +77,15 @@ fi
 }
 
 
-get_distro_name(){
-    #   Instead of grepping via the output from a pipe ie
-    #   cat /usr/lib/os-release | grep -E "^NAME=" etc..
-    #   'grep' against a pattern and a location, hence
-    DISTRO_NAME="$(grep ^NAME /etc/os-release | cut -d'=' -f2)"
-    distro_name="${DISTRO_NAME%\"}"     # remove leading quote
-    distro_name="${distro_name#\"}"     # remove trailing quote
-    printf "******************************************************\n"
-    printf "This distro is $distro_name\n"
-    
-    echo "This distro is $distro_name\n" >> report_list
-}
 
 
 # Check system is up to date
 update_n_refresh(){
     printf "******************************************************\n"
     printf "*\n* Checking up-to-date\n"
+    
+    get_distro_name
+    
         if [ "$distro_type" = "KDE neon" ]
             then $UPDATE_NEON
             else $UPDATE_UBUNTU
@@ -84,7 +94,10 @@ update_n_refresh(){
     # check if reboot is required
         if [ -f $REBOOT ]
             then 
-                echo "Just updated and upgraded REEBOOT REQUIRED !" && exit 1
+                printf "**********************************************"
+                printf "Just updated and upgraded REEBOOT REQUIRED !\n"
+                report_restart
+                exit 1
         fi
 }
 
@@ -111,8 +124,10 @@ apt_installs(){
    
     APT_LIST=(python curl chromium-browser)
         if [ -f $REBOOT ]
-            then 
-                printf "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
+            then
+                printf "**********************************************"
+                printf "Just updated and upgraded REEBOOT REQUIRED !\n" 
+                exit 1
             else
                 for index in "${APT_LIST[@]}"
                     do
@@ -557,6 +572,8 @@ _EOF_
 # PRINTER INSTALLATION - Brother DCPJ-140W 
 add_printer_driver(){
 
+
+
     printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
     printf "****************************************************************\n"
     printf "You are going to install following packages.. --> y\n"
@@ -632,7 +649,7 @@ config_autostarts(){
 
 
 make_report(){
-
+    report_distro_name
     report_snap_list
     report_flatpak_list
     report_gufw

@@ -104,19 +104,9 @@ update_n_refresh(){
 
 
 
-# Traditional apt installs
-# apt_installs(){
-# 
-#     # check if reboot is required
-#    
-#         if [ -f $REBOOT ]
-#             then 
-#                 printf "Just updated and upgraded REEBOOT REQUIRED !\n" && exit 1
-#             else
-#                 sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
-#         fi
-#     
-# }
+
+#  sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
+
 
 apt_installs(){
 
@@ -142,31 +132,7 @@ apt_installs(){
 
 
 
-# Ensure Snap and Flatpak tools are installed
-ensure_snapd_flatpak_installed(){
-    if [ ! $(which snap) ]; then
-        sudo apt update
-        sudo apt -y install snapd
-    fi
-
-    if [ ! $(which flatpak) ]; then
-        sudo add-apt-repository ppa:alexlarsson/flatpak
-        sudo apt -y update
-        sudo apt -y install flatpak gnome-software-plugin-flatpak
-        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        sudo touch /var/run/flatpak-requires-reboot
-        printf "Just installed Flatpaks - REEBOOT REQUIRED !\n"
-        exit 1
-    fi
-    
-    
-    if [ $(which flatpak) ] ; then echo "Flatpak installed" >> report_list ; fi
-    if [ $(which snap) ]  ; then echo "Snap installed" >> report_list ; fi
-}
-
-
-
-
+# SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" darktable postgresql10 obs-studio handbrake-jz vidcutter libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
 
 
 install_many_snaps(){
@@ -179,7 +145,7 @@ install_many_snaps(){
 #       hence the loop
     printf "**************************************************\n"
     printf "Installing Snaps\n"
-    SNAPS_=("thunderbird --beta" "telegram-desktop" "node --classic --channel=10/stable" grv eog vlc ffmpeg "mpv --beta" darktable postgresql10 obs-studio handbrake-jz vidcutter libreoffice chromium keepassxc mailspring konversation "slack --classic" "vscode --classic" "slack --classic" insomnia postman gravit-designer inkscape gnome-calendar gnome-calculator wire "shotcut --classic" )
+    SNAPS_=("node --classic --channel=10/stable" libreoffice chromium )
 
     for index in "${SNAPS_[@]}"
         do
@@ -201,12 +167,14 @@ install_many_snaps(){
 }
 
 
+# FLATPAKS=(com.abisource.AbiWord org.audacityteam.Audacity org.kde.kdenlive org.gimp.GIMP org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
+
 
 install_many_flatpaks(){
 # Install Flatpak's
     printf "**************************************************\n"
     printf "Installing Flatpaks\n"
-    FLATPAKS=(com.abisource.AbiWord org.kde.kdenlive org.gimp.GIMP org.filezillaproject.Filezilla io.github.Hexchat de.haeckerfelix.gradio io.github.rinigus.OSMScoutServer com.calibre_ebook.calibre im.riot.Riot org.kde.krita io.github.wereturtle.ghostwriter org.gottcode.FocusWriter com.bitwarden.desktop org.gnome.Boxes)
+    FLATPAKS=(com.abisource.AbiWord org.gimp.GIMP)
 
 
     for index in "${FLATPAKS[@]}"
@@ -222,15 +190,18 @@ install_many_flatpaks(){
 
 # Setup Gufw
 setup_firewall(){
-    printf "**************************************************\n"
-    printf "Setup Firewall\n"
-    sudo ufw enable
-    sudo ufw allow 631/tcp
-    sudo ufw allow 1714:1764/udp
-    sudo ufw allow 1714:1764/tcp
-    sudo ufw reload
-    sudo ufw status
-    printf "**************************************************\n"
+
+
+    
+    if [ ! $(which gufw) ]
+        then 
+            sudo apt -y install gufw
+            $gufw_installed = "yes"
+    fi
+    
+    check_ufw_ports_set
+    
+
 }
 
 
@@ -242,7 +213,11 @@ install_node_npm_nvm(){
     # The NodeSource-managed Node.js snap contains the Node.js runtime, along the two most widely-used package managers, npm and Yarn.
     
     # install node via snap for channel selected
-     if [ ! $(which node) ]; then snap install "node --classic --channel=10/stable"; fi
+    if [ ! $(which node) ]
+        then 
+            snap install "node --classic --channel=10/stable"
+            curl -sL https://deb.nodesource.com/test | bash -
+    fi
     
     # Install Node Version Manager (NVM) 
     # - but not sure if required with Snap based node control
@@ -256,31 +231,34 @@ install_node_npm_nvm(){
     # Not for production deployments; use .deb or .rpm
     
     # To test an installation is working
-    curl -sL https://deb.nodesource.com/test | bash -
-
+    
 }
 
 
 # Install Google Fonts
 get_and_install_google_fonts(){
-    printf "**************************************************\n"
-    printf "Downloading and installing Google Fonts"
-#   Get http of all google fonts
-#   This was done manually by copying the download URL, via Falkon browser 
-#   having selected desired fonts at https://fonts.google.com/
 
+    check_google_fonts
     
+    if [ $google_fonts_installed = "no" ] 
     
-    GOOGY_FONTS=/home/$CURRENT_USER/Downloads/googleFonts
-    
-    mkdir -p $GOOGY_FONTS 
-    mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
+        then
+            printf "**************************************************\n"
+            printf "Downloading and installing Google Fonts"
+            
+            # Get http of all google fonts
+            # This was done manually by copying the download URL, via Falkon browser 
+            # having selected desired fonts at https://fonts.google.com/
+        
+            GOOGY_FONTS=/home/$CURRENT_USER/Downloads/googleFonts
+            mkdir -p $GOOGY_FONTS 
+            mkdir -p $GOOGY_FONTS/google_font_downloads #create a google font download directory
 
 
-# For reasons unkown, wget wouldn't download all the fonts in one single URL
-# Hence the $wget -i witha a URL list created via a heredoc
+            # For reasons unkown, wget wouldn't download all the fonts in one single URL
+            # Hence the $wget -i witha a URL list created via a heredoc
 
-    cat << __EOF__ > $GOOGY_FONTS/google_font_list.txt
+            cat << __EOF__ > $GOOGY_FONTS/google_font_list.txt
 https://fonts.google.com/download?family=ABeeZee|Abel|Abril+Fatface|Aclonica|Acme|Actor|Adamina|Advent+Pro|Aldrich|Alegreya|Alegreya+Sans|Alegreya+Sans+SC|Alex+Brush|Alfa+Slab+One
 https://fonts.google.com/download?family=Alice|Allerta|Allura|Amatic+SC|Amiri|Anaheim|Antic+Slab|Anton|Arapey|Arbutus+Slab|Architects+Daughter|Archivo|Archivo+Black|Archivo+Narrow|Aref+Ruqaa|Arimo|Armata|Arvo|Asap|Assistant|Audiowide|Bad+Script|Bai+Jamjuree|Baloo|Baloo+Tamma|Bangers|Barlow|Barlow+Condensed|Barlow+Semi+Condensed
 https://fonts.google.com/download?family=Basic|BenchNine|Bevan|Bitter|Black+Han+Sans|Black+Ops+One|Boogaloo|Bowlby+One+SC|Bree+Serif|Cabin|Cabin+Condensed|Cabin+Sketch|Cairo|Candal|Cantarell|Cantata+One|Cardo|Carme|Carter+One|Catamaran|Caveat|Caveat+Brush|Ceviche+One|Chakra+Petch|Chivo|Cinzel|Coda|Comfortaa|Coming+Soon|Concert+One|Cookie|Copse|Cormorant|Cormorant+Garamond|Cormorant+Upright
@@ -311,34 +289,36 @@ __EOF__
 
 
 
-# Download zipped fonts and unzip
-# To parse a file that contains a list of URLs to fetch each one 
-# $ wget -i url_list.txt
-# file should consist of a series of URLs, one per line
-# Note: OFL.txt is just liscence info
+        # Download zipped fonts and unzip
+        # To parse a file that contains a list of URLs to fetch each one 
+        # $ wget -i url_list.txt
+        # file should consist of a series of URLs, one per line
+        # Note: OFL.txt is just liscence info
 
-    pushd $GOOGY_FONTS/google_font_downloads
-    wget -q -i $GOOGY_FONTS/google_font_list.txt
-    for i in *; do mv $i `echo $i | cut -d'=' -f2`.zip; done  # clean up zip filenames
-    for i in *; do unzip $i; `if [ -f OFL.txt ]; then rm OFL.txt; fi`; done  # remove OFL.txt, causes errors
-    rm *.zip
+            pushd $GOOGY_FONTS/google_font_downloads
+            wget -q -i $GOOGY_FONTS/google_font_list.txt
+            for i in *; do mv $i `echo $i | cut -d'=' -f2`.zip; done  # clean up zip filenames
+            for i in *; do unzip $i; `if [ -f OFL.txt ]; then rm OFL.txt; fi`; done  # remove OFL.txt, causes errors
+            rm *.zip
 
 
-# Copy fonts to correct directories
+        # Copy fonts to correct directories
 
-    # create a FHS stadard font directory if dosn't exist (though this is unlikley)
-    if [ ! -d $SHARE_FONT_DIR/truetype ] ; then mkdir -p $SHARE_FONT_DIR/truetype ; fi
+            # create a FHS stadard font directory if dosn't exist (though this is unlikley)
+            if [ ! -d $SHARE_FONT_DIR/truetype ] ; then mkdir -p $SHARE_FONT_DIR/truetype ; fi
     
-    sudo cp -r $GOOGY_FONTS/google_font_downloads/* $SHARE_FONT_DIR/truetype
-    printf "copied fonts to $SHARE_FONT_DIR/truetype\n"
+            sudo cp -r $GOOGY_FONTS/google_font_downloads/* $SHARE_FONT_DIR/truetype
+            printf "copied fonts to $SHARE_FONT_DIR/truetype\n"
 
-    popd
-    rm -r $GOOGY_FONTS
+            popd
+            rm -r $GOOGY_FONTS
     
-    if [ $(which yarn) ]; then echo "Yarn" >> report_list ; fi
-    
-    # assume if font 'Zilla_Slab' exists (as last to be downloaded)
-    # then Google Fonts are installed
+            # assume if font 'Zilla_Slab' exists (as last to be downloaded)
+            # then Google Fonts are installed
+            
+            $google_fonts_installed = "yes"
+            
+    fi
     
 }
 
@@ -350,30 +330,40 @@ __EOF__
 # GIMP filters from Gimp 2.8 to 2.10
 
 install_gimp_filters(){
-    printf "**************************************************\n"
-    printf "Install Gimp 2.8 filter to Gimp 2.10\n"
-    PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
-    if [ ! $(which gimp-plugin-registry) ]; then 
-    sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
-    fi
 
-    # Simplistically we could copy 2.8 plugins to Gimp 2.10 Snap ie.
-#     if [ -e "/snap/bin/gimp" ]; then
-#     PLUGIN_SNAP_PATH=/snap/gimp/current/usr/lib/gimp/2.0/plug-ins
-#     sudo cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
-#     fi
+check_gimp_filters_installed
 
-    # BUT this won't work because it's impossible to change the current of a snap without rebuilding a snap.
+    if [ $gimp_filters_installed = "no" ]
+        then
+
+        printf "**************************************************\n"
+        printf "Install Gimp 2.8 filter to Gimp 2.10\n"
+        PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
+        if [ ! $(which gimp-plugin-registry) ]; then 
+        sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
+        fi
+
+        # Simplistically we could copy 2.8 plugins to Gimp 2.10 Snap ie.
+        # if [ -e "/snap/bin/gimp" ]; then
+        # PLUGIN_SNAP_PATH=/snap/gimp/current/usr/lib/gimp/2.0/plug-ins
+        # sudo cp $PLUGIN_2_8_PATH/* $PLUGIN_SNAP_PATH
+        # fi
+
+        # BUT this won't work because it's impossible to change the current of a snap without rebuilding a snap.
     
-    # Copy 2.8 plugins to Gimp 2.10 Flatpak
-    PLUGIN_FLATPAK_PATH=/var/lib/flatpak/app/org.gimp.GIMP/current/active/files/lib/gimp/2.0/plug-ins
-    if [ -e "/home/$CURRENT_USER/.var/app/org.gimp.GIMP" ]; then
-    sudo chown $CURRENT_USER:$CURRENT_USER -R $PLUGIN_FLATPAK_PATH
-    cp -r $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
-    fi
+        # Copy 2.8 plugins to Gimp 2.10 Flatpak
+        PLUGIN_FLATPAK_PATH=/var/lib/flatpak/app/org.gimp.GIMP/current/active/files/lib/gimp/2.0/plug-ins
+        if [ -e "/home/$CURRENT_USER/.var/app/org.gimp.GIMP" ]; then
+        sudo chown $CURRENT_USER:$CURRENT_USER -R $PLUGIN_FLATPAK_PATH
+        cp -r $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
+        fi
 
-    # remove old gimp 2_8
-    sudo apt -y purge gimp
+        # remove old gimp 2_8
+        sudo apt -y purge gimp
+        
+        $gimp_filters_installed = "yes"
+        
+    fi
 }
 
 
@@ -385,27 +375,45 @@ install_gimp_filters(){
 
 # create Appimages directory in /opt
 create_appimages_dir(){
-    printf "**************************************************\n"
-    printf "Create Appimage Directory\n"
-    sudo mkdir -p $APPIMAGES_DIR
-    sudo chmod +xw $APPIMAGES_DIR
+
+    check_appimages_installed
+    
+    if [ $appimages_installed = "no" ]
+        then
+            printf "**************************************************\n"
+            printf "Create Appimage Directory\n"
+            sudo mkdir -p $APPIMAGES_DIR
+            sudo chmod +xw $APPIMAGES_DIR
+            
+            $appimages_installed = "yes"
+    fi
 }
 
 
 
 # Install Etcher via Appimages
 install_etcher(){
-    printf "**************************************************\n"
-    printf "Installing Etcher Appimage 1.4.6\n"
+
+    check_etcher_installed
     
-    etcher_version="etcher-electron-1.4.6-linux-x64.zip"
-    etcher_url="https://github.com/balena-io/etcher/releases/download/v1.4.6/"
+    if [ $etcher_installed = "no" ]
+    then
     
-    sudo wget -O $APPIMAGES_DIR/$etcher_version $etcher_url/$etcher_version
-    sudo mkdir -p $APPIMAGES_DIR/Etcher/
-    sudo unzip -qq -o $APPIMAGES_DIR/$etcher_version -d $APPIMAGES_DIR/Etcher/
-    sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
-    sudo rm $APPIMAGES_DIR/$etcher_version
+        printf "**************************************************\n"
+        printf "Installing Etcher Appimage 1.4.6\n"
+    
+        etcher_version="etcher-electron-1.4.6-linux-x64.zip"
+        etcher_url="https://github.com/balena-io/etcher/releases/download/v1.4.6/"
+    
+        sudo wget -O $APPIMAGES_DIR/$etcher_version $etcher_url/$etcher_version
+        sudo mkdir -p $APPIMAGES_DIR/Etcher/
+        sudo unzip -qq -o $APPIMAGES_DIR/$etcher_version -d $APPIMAGES_DIR/Etcher/
+        sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
+        sudo rm $APPIMAGES_DIR/$etcher_version
+        
+        $etcher_installed = "yes"
+        
+    fi
 }
 
 
@@ -413,27 +421,32 @@ install_etcher(){
 
 # Install Git-it
 install_git-it(){
-    printf "**************************************************\n"
-    printf "Download and Install Git-it git help tool\n"
+
+    check_gitit_installed
     
-    usr_share=/usr/share
-    usr_applications_dir=/usr/share/applications
-    pixmaps_dir=/usr/share/pixmaps
+    if [ $gitit_installed = "no" ]
+    then
+        printf "**************************************************\n"
+        printf "Download and Install Git-it git help tool\n"
     
-    git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0"
-    git_it_file="Git-it-Linux-x64.zip"
+        usr_share=/usr/share
+        usr_applications_dir=/usr/share/applications
+        pixmaps_dir=/usr/share/pixmaps
     
-    git_it_png_url="https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/"
+        git_it_url="https://github.com/jlord/git-it-electron/releases/download/4.4.0"
+        git_it_file="Git-it-Linux-x64.zip"
+    
+        git_it_png_url="https://raw.githubusercontent.com/jlord/git-it-electron/master/assets/"
     
 
-    sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share
-    sudo wget -O $usr_share/$git_it_file $git_it_url/$git_it_file
-    unzip -qq -o $usr_share/$git_it_file -d $usr_share
-    sudo chown -R $CURRENT_USER:$CURRENT_USER $usr_share/Git-it-Linux-x64
-    sudo rm $usr_share/$git_it_file
-    sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share/applications
+        sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share
+        sudo wget -O $usr_share/$git_it_file $git_it_url/$git_it_file
+        unzip -qq -o $usr_share/$git_it_file -d $usr_share
+        sudo chown -R $CURRENT_USER:$CURRENT_USER $usr_share/Git-it-Linux-x64
+        sudo rm $usr_share/$git_it_file
+        sudo chown $CURRENT_USER:$CURRENT_USER -R /usr/share/applications
     
-    cat << _EOF_ > $usr_share/applications/Git-it.desktop
+        cat << _EOF_ > $usr_share/applications/Git-it.desktop
 [Desktop Entry]
 Name=Gitit
 Type=Application
@@ -446,91 +459,128 @@ Keywords=Git;Github
 _EOF_
     
     
-    mkdir -p $usr_share/Git-it-Linux-x64/icons
-    sudo wget -O $usr_share/Git-it-Linux-x64/icons/git-it.png $git_it_png_url/git-it.png
-    sudo convert $usr_share/Git-it-Linux-x64/icons/git-it.png -resize x128 $usr_share/Git-it-Linux-x64/icons/git-it-s128.png
+        mkdir -p $usr_share/Git-it-Linux-x64/icons
+        sudo wget -O $usr_share/Git-it-Linux-x64/icons/git-it.png $git_it_png_url/git-it.png
+        sudo convert $usr_share/Git-it-Linux-x64/icons/git-it.png -resize x128 $usr_share/Git-it-Linux-x64/icons/git-it-s128.png
+        
+        $gitit_installed = "yes"
+        
+    fi
+
 }
 
 
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
 install_ring(){
-    printf "**************************************************\n"
-    printf "Download and Install GNU Ring\n"
+
+    check_ring_installed
     
-    ring_url="https://dl.ring.cx/ubuntu_18.04"
-    ring_file="ring-all_amd64.deb"
+    if [ $ring_installed = "no" ]
+        then
+            printf "**************************************************\n"
+            printf "Download and Install GNU Ring\n"
     
-    wget -O /home/$CURRENT_USER/Downloads/$ring_file $ring_url/$ring_file
-    sudo dpkg -i /home/$CURRENT_USER/Downloads/$ring_file
+            ring_url="https://dl.ring.cx/ubuntu_18.04"
+            ring_file="ring-all_amd64.deb"
+    
+            wget -O /home/$CURRENT_USER/Downloads/$ring_file $ring_url/$ring_file
+            sudo dpkg -i /home/$CURRENT_USER/Downloads/$ring_file
+            
+            $ring_installed = "yes"
+    fi
 }
-
-
 
 
 
 
 
 install_abricotine(){
-    printf "**************************************************\n"
-    printf "Install Abricotine markdown editor\n"
+
+    check_abricotine_installed
     
-    abricotine_file="Abricotine-0.6.0-ubuntu-debian-x64.deb"
-    abricotine_url="https://github.com/brrd/Abricotine/releases/download/0.6.0"
-    downloads_dir=/home/$CURRENT_USER/Downloads
+    if [ $abricotine_installed = "no" ]
+        then
+            printf "**************************************************\n"
+            printf "Install Abricotine markdown editor\n"
+    
+            abricotine_file="Abricotine-0.6.0-ubuntu-debian-x64.deb"
+            abricotine_url="https://github.com/brrd/Abricotine/releases/download/0.6.0"
+            downloads_dir=/home/$CURRENT_USER/Downloads
     
     
-    # Ensure dependancies are installed
-    sudo apt -qq install -y git gconf2 gconf-service python gvfs-bin
+            # Ensure dependancies are installed
+            sudo apt -qq install -y git gconf2 gconf-service python gvfs-bin
     
-    wget -O $downloads_dir/$abricotine_file $abricotine_url/$abricotine_file
-    sudo dpkg -i $downloads_dir/$abricotine_file
-    sudo rm -r $downloads_dir/$abricotine_file
+            wget -O $downloads_dir/$abricotine_file $abricotine_url/$abricotine_file
+            sudo dpkg -i $downloads_dir/$abricotine_file
+            sudo rm -r $downloads_dir/$abricotine_file
+            
+            $abricotine_installed = "yes"
+    fi
 }
 
 
 
 
 install_youtube-dl(){
-    printf "**************************************************\n"
-    printf "Install Youtube-dl\n"
-    
-    # Prefered over an apt install from Ubuntu as the Ubuntu repo is not up-to-date
-    sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/bin/youtube-dl
-    sudo chmod a+rx /usr/bin/youtube-dl
 
-    # Also added "sudo youtube-dl -U" to alias 'updateme'
+    check_youtube_dl_installed
+    
+    if [ $youtube_dl_installed = "no" ]
+        then
+            printf "**************************************************\n"
+            printf "Install Youtube-dl\n"
+    
+            # Prefered over an apt install from Ubuntu as the Ubuntu repo is not up-to-date
+            sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/bin/youtube-dl
+            sudo chmod a+rx /usr/bin/youtube-dl
+
+            # Also added "sudo youtube-dl -U" to alias 'updateme'
+            
+            $youtube_dl_installed = "yes"
+    fi
 }
 
 
 
 install_oh_my_zsh(){
-    printf "**************************************************\n"
-    printf "Install oh-my-zsh shell\n"
-    # ensure zsh and power fonts (required for some zsh themes) is installed
-    if [ ! $(which zsh) ]; then 
-        sudo apt -y install zsh fonts-powerline
-    fi
-    sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+    check_oh_my_zsh_installed
     
-    ZSH_CUSTOM_THEMES=/home/$CURRENT_USER/.oh-my-zsh/custom/themes/
-    cp /home/$CURRENT_USER/.zshrc /home/$CURRENT_USER/.zshrc_backup
+    if [ $zsh_installed = "no" ]
+        then
+            printf "**************************************************\n"
+            printf "Install oh-my-zsh shell\n"
+            # ensure zsh and power fonts (required for some zsh themes) is installed
+            if [ ! $(which zsh) ]; then 
+            sudo apt -y install zsh fonts-powerline
+            fi
+            sudo sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
     
-    # install oh-my-zsh 'Node' theme
-    wget -O $ZSH_CUSTOM_THEMES/node.zsh-theme https://raw.githubusercontent.com/skuridin/oh-my-zsh-node-theme/master/node.zsh-theme
+            ZSH_CUSTOM_THEMES=/home/$CURRENT_USER/.oh-my-zsh/custom/themes/
+            cp /home/$CURRENT_USER/.zshrc /home/$CURRENT_USER/.zshrc_backup
+    
+            # install oh-my-zsh 'Node' theme
+            wget -O $ZSH_CUSTOM_THEMES/node.zsh-theme https://raw.githubusercontent.com/skuridin/oh-my-zsh-node-theme/master/node.zsh-theme
   
-    # install oh-my-zsh 'Space ship' theme
-    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM_THEMES/spaceship-prompt"
-    ln -s "$ZSH_CUSTOM_THEMES/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_THEMES/spaceship.zsh-theme"
+            # install oh-my-zsh 'Space ship' theme
+            git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM_THEMES/spaceship-prompt"
+            ln -s "$ZSH_CUSTOM_THEMES/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_THEMES/spaceship.zsh-theme"
     
-    # Set zsh theme to spaceship
-    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="spaceship"/g' /home/$CURRENT_USER/.zshrc
+            # Set zsh theme to spaceship
+            sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="spaceship"/g' /home/$CURRENT_USER/.zshrc
     
-    # Alternativley set theme to node.zsh
-    # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="node.zsh-theme"/g' /home/$USER/.zshrc
+            # Alternativley set theme to node.zsh
+            # sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="node.zsh-theme"/g' /home/$USER/.zshrc
     
-    # make sure bash shell is the default though
-    chsh --shell /bin/bash $CURRENT_USER
+            # make sure bash shell is the default though
+            chsh --shell /bin/bash $CURRENT_USER
+            
+            $zsh_installed = "yes"
+            
+    fi
+            
 }
 
 
@@ -548,20 +598,31 @@ backup_bashrc(){
 
 # Setup 'updateme' alias
 setup_updateme_alias(){
-    printf "**************************************************\n"
-    printf "Setup aliases\n"
-    if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
-        cp /home/$CURRENT_USER/.bash_aliases /home/$CURRENT_USER/.bash_aliases_backup
-        else touch /home/$CURRENT_USER/.bash_aliases
-    fi
 
-    cat << _EOF_ >> /home/$CURRENT_USER/.bash_aliases
+    check_bash_aliases_installed
+    
+    if [ $bash_aliases_installed = "no" ]
+    
+     then
+
+        printf "**************************************************\n"
+        printf "Setup aliases\n"
+        if [ -f /home/$CURRENT_USER/.bash_aliases ]; then
+            cp /home/$CURRENT_USER/.bash_aliases /home/$CURRENT_USER/.bash_aliases_backup
+            else touch /home/$CURRENT_USER/.bash_aliases
+        fi
+
+        cat << _EOF_ >> /home/$CURRENT_USER/.bash_aliases
 alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
 alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
 alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
 _EOF_
+
+    $bash_aliases_installed = "yes"
+    
+    fi
 }
 
 
@@ -572,31 +633,39 @@ _EOF_
 # PRINTER INSTALLATION - Brother DCPJ-140W 
 add_printer_driver(){
 
-
-
-    printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
-    printf "****************************************************************\n"
-    printf "You are going to install following packages.. --> y\n"
-    printf "Brother License Agreement --> y\n"
-    printf "Do you agree? --> y\n"
-    printf "Will you specify the Device URI? --> y\n"
-    printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
-    printf "Test Print? [y/N] --> choose y or n\n"
-    printf "Do you agree? --> y\n"
-    printf "Do you agree? --> y\n"
-    printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
-
-    linux_brprinter_gz="linux-brprinter-installer-2.2.1-1.gz"
-    linux_brprinter_file="linux-brprinter-installer-2.2.1-1"
-    linux_brprinter_url="https://download.brother.com/welcome/dlf006893"
+    check_printer_installed
     
-    downloads_dir=/home/$CURRENT_USER/Downloads
+    if [ $printer_installed = "no" ]
     
-    wget -qO $downloads_dir/$linux_brprinter_gz $linux_brprinter_url/$linux_brprinter_gz
-    gunzip $downloads_dir/$linux_brprinter_gz
-    sudo bash $downloads_dir/$linux_brprinter_file DCP-J140W
-    rm $downloads_dir/$linux_brprinter_gz
-    rm $downloads_dir/$linux_brprinter_file
+        then
+
+        printf "Printer and Scanner DCP-J140W Installation Questions and Answers\n"
+        printf "****************************************************************\n"
+        printf "You are going to install following packages.. --> y\n"
+        printf "Brother License Agreement --> y\n"
+        printf "Do you agree? --> y\n"
+        printf "Will you specify the Device URI? --> y\n"
+        printf "select the number of destination Device URI. --> [choose 10  or  12]\n"
+        printf "Test Print? [y/N] --> choose y or n\n"
+        printf "Do you agree? --> y\n"
+        printf "Do you agree? --> y\n"
+        printf "enter IP address --> [see printer menu eg. 192.123.456.789]\n"
+
+        linux_brprinter_gz="linux-brprinter-installer-2.2.1-1.gz"
+        linux_brprinter_file="linux-brprinter-installer-2.2.1-1"
+        linux_brprinter_url="https://download.brother.com/welcome/dlf006893"
+    
+        downloads_dir=/home/$CURRENT_USER/Downloads
+    
+        wget -qO $downloads_dir/$linux_brprinter_gz $linux_brprinter_url/$linux_brprinter_gz
+        gunzip $downloads_dir/$linux_brprinter_gz
+        sudo bash $downloads_dir/$linux_brprinter_file DCP-J140W
+        rm $downloads_dir/$linux_brprinter_gz
+        rm $downloads_dir/$linux_brprinter_file
+        
+        $printer_installed = "yes"
+        
+    fi
 }
 
 
@@ -624,23 +693,31 @@ setup_external_hd_ownership(){
 
 config_autostarts(){
 
-    # Yakuake
-    #   Set yakuake to autostart but closed
-    #   Since Yakuake is a KDE app can use qcbus interface
+    if [ ! -f config_autostarts ]
+        then
+    
+        # Yakuake
+        # Set yakuake to autostart but closed
+        # Since Yakuake is a KDE app can use qcbus interface
 
         qdbus org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
 
-    # Tomboy notes
-    #   Set tomboynotes to autostart
-    #   Tomboynotes isn't a KDE app, its mono so qdbus won't work
-    #   But want Tomboy closed, i.e. no search
-    #   by default the tomboy.desktop Exec has a search flag enabled ie. 
-    #   Exec=tommboy --search
-    #   because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
+        # Tomboy notes
+        #   Set tomboynotes to autostart
+        #   Tomboynotes isn't a KDE app, its mono so qdbus won't work
+        #   But want Tomboy closed, i.e. no search
+        #   by default the tomboy.desktop Exec has a search flag enabled ie. 
+        #   Exec=tommboy --search
+        #   because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
 
         TOMBOY_DESKTOP_CONFIG=/home/$CURRENT_USER/.config/autostart/tomboy.desktop
         echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
         printf "\n--> DONE\n"
+        
+        touch config_autostarts_done  
+        # create a file as a general marker that autostarts are installed
+        
+    fi
 }
 
 
@@ -677,26 +754,26 @@ make_report(){
 check_if_distro_is_ubuntu
 get_distro_name
 update_n_refresh
-# apt_installs
-# update_n_refresh
-# setup_firewall
-# ensure_snapd_flatpak_installed
-# install_many_snaps
-# install_many_flatpaks
-# install_node_npm_nvm
-# create_appimages_dir
-# install_etcher
-# install_git-it
-# install_abricotine
-# install_youtube-dl
-# install_gimp_filters
-# get_and_install_google_fonts
-# install_oh_my_zsh
-# backup_bashrc
-# setup_updateme_alias
-# add_printer_driver
-# setup_external_hd_ownership
-# config_autostarts
+apt_installs
+update_n_refresh
+setup_firewall
+check_snapd_flatpak_installed
+install_many_snaps
+install_many_flatpaks
+install_node_npm_nvm
+create_appimages_dir
+install_etcher
+install_git-it
+install_abricotine
+install_youtube-dl
+install_gimp_filters
+get_and_install_google_fonts
+install_oh_my_zsh
+backup_bashrc
+setup_updateme_alias
+add_printer_driver
+setup_external_hd_ownership
+config_autostarts
 
 clear_lists
 make_report

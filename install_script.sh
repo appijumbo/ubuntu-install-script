@@ -1,11 +1,16 @@
 #!/bin/bash
+clear
 
 # Add report functions
-. install_report.sh
+wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
+
+sudo chmod +x install_report
+
+source install_report.sh
 
 
 
-clear
+
 
 printf "******************************************************\n"
 printf "Installation Script\n"
@@ -13,7 +18,7 @@ printf "******************************************************\n"
 
 
 # ON STARTUP ALWAYS DO
-######################################################## 
+########################################################
 
 # Define Global variables
 
@@ -702,6 +707,26 @@ config_autostarts(){
 
 
 make_report(){
+
+    printf "distro_name $distro_name"
+    printf "ufw_ports_set $ufw_ports_set"
+    printf "gufw_installed $gufw_installed"
+    printf "node_installed $node_installed"
+    printf "npm_installed $npm_installed"
+    printf "yarn_installed $yarn_installed"
+    printf "google_fonts_installed $google_fonts_installed"
+    printf "gimp_filters_installed $gimp_filters_installed"
+    printf "appimages_installed $appimages_installed"
+    printf "etcher_installed $etcher_installed"
+    printf "gitit_installed $gitit_installed"
+    printf "ring_installed $ring_installed"
+    printf "abricotine_installed $abricotine_installed"
+    printf "youtube_dl_installed $youtube_dl_installed"
+    printf "zsh_installed $zsh_installed"
+    printf "oh_my_zsh_installed $oh_my_zsh_installed"
+    printf "bash_aliases_installed $bash_aliases_installed"
+    printf "printer_installed $printer_installed"
+
     report_distro_name
     report_snap_list
     report_flatpak_list
@@ -741,6 +766,33 @@ check_youtube_dl_installed
 check_oh_my_zsh_installed
 check_bash_aliases_installed
 check_printer_installed
+
+
+
+
+
+printf "distro_name $distro_name"
+printf "ufw_ports_set $ufw_ports_set"
+printf "gufw_installed $gufw_installed"
+printf "node_installed $node_installed"
+printf "npm_installed $npm_installed"
+printf "yarn_installed $yarn_installed"
+printf "google_fonts_installed $google_fonts_installed"
+printf "gimp_filters_installed $gimp_filters_installed"
+printf "appimages_installed $appimages_installed"
+printf "etcher_installed $etcher_installed"
+printf "gitit_installed $gitit_installed"
+printf "ring_installed $ring_installed"
+printf "abricotine_installed $abricotine_installed"
+printf "youtube_dl_installed $youtube_dl_installed"
+printf "zsh_installed $zsh_installed"
+printf "oh_my_zsh_installed $oh_my_zsh_installed"
+printf "bash_aliases_installed $bash_aliases_installed"
+printf "printer_installed $printer_installed"
+
+
+
+
 
 
 get_distro_name

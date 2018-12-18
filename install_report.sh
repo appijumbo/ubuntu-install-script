@@ -132,6 +132,7 @@ check_gufw_installed(){
     if [ ! $(which gufw) ] 
         then gufw_installed="no"
         else gufw_installed="yes"
+    fi
 }
 
 
@@ -272,7 +273,7 @@ report_appimages(){
             printf_line
             ls -1 /opt/appimages | cut -d'-' -f1 > appimage_raw_list
             appimage_raw_list >> report_list
-        fi
+    fi
 }
 
 
@@ -284,6 +285,7 @@ check_etcher_installed(){
     if [ -f /opt/appimages/Etcher/*.AppImage ] 
         then etcher_installed="yes"
         else etcher_installed="no"
+    fi
 }
 
 
@@ -295,6 +297,7 @@ report_etcher(){
         then
             print_line
             echo "Etcher : Appimage" >> report_list
+    fi
 }
 
 
@@ -444,6 +447,7 @@ check_bash_aliases_installed(){
     if [ -f /home/$CURRENT_USER/.bash_aliases ]
         then bash_aliases_installed="yes"
         else bash_aliases_installed="no"
+    fi
 }
 
 

@@ -141,7 +141,7 @@ check_ufw_ports_set() {
         sudo ufw reload
         sudo ufw status
         printf "**************************************************\n"
-        $ufw_ports_set = "yes"
+        ufw_ports_set="yes"
     fi
     
 }
@@ -166,9 +166,9 @@ check_ufw_ports_set
 
 check_node_installed(){
 
-    if [ $(which node) ]; then $node_installed="yes"; else $node_installed="no"; fi
-    if [ $(which npm) ]; then $npm_installed="yes"; else $npm_installed="no"; fi
-    if [ $(which yarn) ]; then $yarn_installed="yes"; else $yarn_installed="no"; fi
+    if [ $(which node) ]; then node_installed="yes"; else node_installed="no"; fi
+    if [ $(which npm) ]; then npm_installed="yes"; else npm_installed="no"; fi
+    if [ $(which yarn) ]; then yarn_installed="yes"; else yarn_installed="no"; fi
     
 }
 
@@ -222,8 +222,8 @@ report_google_fonts(){
 
 check_gimp_filters_installed(){
     if [ -d /var/lib/flatpak/app/org.gimp.GIMP/current/active/files/lib/gimp/2.0/plug-ins/wavelet-denoise ] || [ -e /usr/lib/gimp/2.0/plug-ins/wavelet-denoise ]
-        then $gimp_filters_installed = "yes"
-        else $gimp_filters_installed = "no"
+        then gimp_filters_installed="yes"
+        else gimp_filters_installed="no"
     fi
 }
 
@@ -246,8 +246,8 @@ report_gimp(){
 
 check_appimages_installed(){
     if [ -d /opt/appimages ]
-        then $appimages_installed = "yes"
-        else $appimages_installed = "no"
+        then appimages_installed="yes"
+        else appimages_installed="no"
     fi
 }
 
@@ -276,8 +276,8 @@ report_appimages(){
 check_etcher_installed(){
 
     if [ -f /opt/appimages/Etcher/*.AppImage ] 
-        then $etcher_installed = "yes"
-        else $etcher_installed = "no"
+        then etcher_installed="yes"
+        else etcher_installed="no"
 }
 
 
@@ -296,7 +296,8 @@ report_etcher(){
 check_gitit_installed(){
 
     if [ -f /usr/share/Git-it-linux-x64/Git-it ] || [ -f /home/$CURRENT_USER/.local/share/Git-it-linux-x64/Git-it ]
-        then $gitit_installed = "yes"
+        then gitit_installed="yes"
+        else gitit_installed="no"
     fi
 
 }
@@ -324,8 +325,8 @@ report_gitit(){
 check_ring_installed(){
 
     if [ -f /usr/bin/ring.cx ]
-        then $ring_installed = "yes"
-        else $ring_installed = "no"
+        then ring_installed="yes"
+        else ring_installed="no"
     fi
 
 }
@@ -352,8 +353,8 @@ report_ring(){
 check_abricotine_installed(){
 
     if [ $(which Abricotine) ]
-        then $abricotine_installed = "yes"
-        else $abricotine_installed = "no"
+        then abricotine_installed="yes"
+        else abricotine_installed="no"
     fi
 }
 
@@ -377,8 +378,8 @@ report_abricotine(){
 check_youtube_dl_installed(){
 
     if [ $(which youtube-dl) ]
-        then $youtube_dl_installed = "yes"
-        else $youtube_dl_installed = "no"
+        then youtube_dl_installed="yes"
+        else youtube_dl_installed="no"
     fi
 }
 
@@ -400,13 +401,13 @@ report_youtube-dl(){
 check_oh_my_zsh_installed(){
 
    if [ $(which zsh) ]
-        then $zsh_installed="yes"
-        else $zsh_installed="no"
+        then zsh_installed="yes"
+        else zsh_installed="no"
     fi
     
     if [ -d /home/tomdom/.oh-my-zsh ]
-        then $oh_my_zsh_installed="yes"
-        else $oh_my_zsh_installed="no"
+        then oh_my_zsh_installed="yes"
+        else oh_my_zsh_installed="no"
     fi
 
 }
@@ -435,8 +436,8 @@ report_oh-my-zsh(){
 check_bash_aliases_installed(){
 
     if [ -f /home/$CURRENT_USER/.bash_aliases ]
-        then $bash_aliases_installed = "yes"
-        else $bash_aliases_installed = "no"
+        then bash_aliases_installed="yes"
+        else bash_aliases_installed="no"
 }
 
 
@@ -455,8 +456,8 @@ report_aliases(){
 check_printer_installed(){
 
     if [ $(lpstat -p | grep -E "lpstat: No destinations added.") ]
-        then $printer_installed = "no"
-        else $printer_installed = "yes"
+        then printer_installed="no"
+        else printer_installed="yes"
     fi
 
 

@@ -196,7 +196,7 @@ setup_firewall(){
     if [ ! $(which gufw) ]
         then 
             sudo apt -y install gufw
-            $gufw_installed = "yes"
+            gufw_installed="yes"
     fi
     
     check_ufw_ports_set
@@ -217,6 +217,9 @@ install_node_npm_nvm(){
         then 
             snap install "node --classic --channel=10/stable"
             curl -sL https://deb.nodesource.com/test | bash -
+            node_installed="yes"
+            npm_installed="yes"
+            yarn_installed="yes"
     fi
     
     # Install Node Version Manager (NVM) 
@@ -316,7 +319,7 @@ __EOF__
             # assume if font 'Zilla_Slab' exists (as last to be downloaded)
             # then Google Fonts are installed
             
-            $google_fonts_installed = "yes"
+            google_fonts_installed="yes"
             
     fi
     
@@ -361,7 +364,7 @@ check_gimp_filters_installed
         # remove old gimp 2_8
         sudo apt -y purge gimp
         
-        $gimp_filters_installed = "yes"
+        gimp_filters_installed="yes"
         
     fi
 }
@@ -385,7 +388,7 @@ create_appimages_dir(){
             sudo mkdir -p $APPIMAGES_DIR
             sudo chmod +xw $APPIMAGES_DIR
             
-            $appimages_installed = "yes"
+            appimages_installed="yes"
     fi
 }
 
@@ -411,7 +414,7 @@ install_etcher(){
         sudo chmod 774 -R $APPIMAGES_DIR/Etcher/*.AppImage
         sudo rm $APPIMAGES_DIR/$etcher_version
         
-        $etcher_installed = "yes"
+        etcher_installed="yes"
         
     fi
 }
@@ -463,7 +466,7 @@ _EOF_
         sudo wget -O $usr_share/Git-it-Linux-x64/icons/git-it.png $git_it_png_url/git-it.png
         sudo convert $usr_share/Git-it-Linux-x64/icons/git-it.png -resize x128 $usr_share/Git-it-Linux-x64/icons/git-it-s128.png
         
-        $gitit_installed = "yes"
+        gitit_installed="yes"
         
     fi
 
@@ -487,7 +490,7 @@ install_ring(){
             wget -O /home/$CURRENT_USER/Downloads/$ring_file $ring_url/$ring_file
             sudo dpkg -i /home/$CURRENT_USER/Downloads/$ring_file
             
-            $ring_installed = "yes"
+            ring_installed="yes"
     fi
 }
 
@@ -516,7 +519,7 @@ install_abricotine(){
             sudo dpkg -i $downloads_dir/$abricotine_file
             sudo rm -r $downloads_dir/$abricotine_file
             
-            $abricotine_installed = "yes"
+            abricotine_installed="yes"
     fi
 }
 
@@ -538,7 +541,7 @@ install_youtube-dl(){
 
             # Also added "sudo youtube-dl -U" to alias 'updateme'
             
-            $youtube_dl_installed = "yes"
+            youtube_dl_installed="yes"
     fi
 }
 
@@ -577,7 +580,7 @@ install_oh_my_zsh(){
             # make sure bash shell is the default though
             chsh --shell /bin/bash $CURRENT_USER
             
-            $zsh_installed = "yes"
+            zsh_installed="yes"
             
     fi
             
@@ -620,7 +623,7 @@ alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
 alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
 _EOF_
 
-    $bash_aliases_installed = "yes"
+    bash_aliases_installed="yes"
     
     fi
 }
@@ -663,7 +666,7 @@ add_printer_driver(){
         rm $downloads_dir/$linux_brprinter_gz
         rm $downloads_dir/$linux_brprinter_file
         
-        $printer_installed = "yes"
+        printer_installed="yes"
         
     fi
 }

@@ -206,8 +206,8 @@ report_node(){
 check_google_fonts(){
 
     if [ -d /usr/share/fonts/truetype/Zilla_Slab ]
-        then $google_fonts_installed = "yes"
-        else $google_fonts_installed = "no"
+        then google_fonts_installed="yes"
+        else google_fonts_installed="no"
     fi
 }
 

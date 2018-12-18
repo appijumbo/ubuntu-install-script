@@ -61,7 +61,7 @@ report_distro_name(){
 
 
 # Ensure Snap and Flatpak tools are installed
-check_snapd_flatpak_installed(){
+install_snapd_flatpak(){
     if [ ! $(which snap) ]; then
         sudo apt update
         sudo apt -y install snapd
@@ -128,6 +128,13 @@ snap_list_raw >> report_list
 
 
 
+check_gufw_installed(){
+    if [ ! $(which gufw) ] 
+        then gufw_installed="no"
+        else gufw_installed="yes"
+}
+
+
 check_ufw_ports_set() {
 
     if [ $ufw_ports_set = "no" ]
@@ -145,7 +152,6 @@ check_ufw_ports_set() {
     fi
     
 }
-
 
 
 report_gufw() {

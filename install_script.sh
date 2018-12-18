@@ -84,7 +84,6 @@ update_n_refresh(){
     printf "******************************************************\n"
     printf "*\n* Checking up-to-date\n"
     
-    get_distro_name
     
         if [ "$distro_type" = "KDE neon" ]
             then $UPDATE_NEON
@@ -190,8 +189,6 @@ install_many_flatpaks(){
 
 # Setup Gufw
 setup_firewall(){
-
-
     
     if [ ! $(which gufw) ]
         then 
@@ -199,9 +196,6 @@ setup_firewall(){
             gufw_installed="yes"
     fi
     
-    check_ufw_ports_set
-    
-
 }
 
 
@@ -241,8 +235,6 @@ install_node_npm_nvm(){
 # Install Google Fonts
 get_and_install_google_fonts(){
 
-    check_google_fonts
-    
     if [ $google_fonts_installed = "no" ] 
     
         then
@@ -334,8 +326,6 @@ __EOF__
 
 install_gimp_filters(){
 
-check_gimp_filters_installed
-
     if [ $gimp_filters_installed = "no" ]
         then
 
@@ -378,8 +368,6 @@ check_gimp_filters_installed
 
 # create Appimages directory in /opt
 create_appimages_dir(){
-
-    check_appimages_installed
     
     if [ $appimages_installed = "no" ]
         then
@@ -396,8 +384,6 @@ create_appimages_dir(){
 
 # Install Etcher via Appimages
 install_etcher(){
-
-    check_etcher_installed
     
     if [ $etcher_installed = "no" ]
     then
@@ -424,8 +410,6 @@ install_etcher(){
 
 # Install Git-it
 install_git-it(){
-
-    check_gitit_installed
     
     if [ $gitit_installed = "no" ]
     then
@@ -476,8 +460,6 @@ _EOF_
 
 # Install GNU Ring - assume Ubuntu amd64 'ring-all' version
 install_ring(){
-
-    check_ring_installed
     
     if [ $ring_installed = "no" ]
         then
@@ -500,7 +482,6 @@ install_ring(){
 
 install_abricotine(){
 
-    check_abricotine_installed
     
     if [ $abricotine_installed = "no" ]
         then
@@ -527,8 +508,6 @@ install_abricotine(){
 
 
 install_youtube-dl(){
-
-    check_youtube_dl_installed
     
     if [ $youtube_dl_installed = "no" ]
         then
@@ -548,8 +527,6 @@ install_youtube-dl(){
 
 
 install_oh_my_zsh(){
-
-    check_oh_my_zsh_installed
     
     if [ $zsh_installed = "no" ]
         then
@@ -601,8 +578,6 @@ backup_bashrc(){
 
 # Setup 'updateme' alias
 setup_updateme_alias(){
-
-    check_bash_aliases_installed
     
     if [ $bash_aliases_installed = "no" ]
     
@@ -635,8 +610,6 @@ _EOF_
 
 # PRINTER INSTALLATION - Brother DCPJ-140W 
 add_printer_driver(){
-
-    check_printer_installed
     
     if [ $printer_installed = "no" ]
     
@@ -753,14 +726,29 @@ make_report(){
 #######################################################################
 ############################   MAIN   #################################
 
-
 check_if_distro_is_ubuntu
+check_ufw_ports_set
+check_gufw_installed
+check_node_installed
+check_google_fonts_installed
+check_gimp_filters_installed
+check_appimages_installed
+check_etcher_installed
+check_gitit_installed
+check_ring_installed
+check_abricotine_installed
+check_youtube_dl_installed
+check_oh_my_zsh_installed
+check_bash_aliases_installed
+check_printer_installed
+
+
 get_distro_name
 update_n_refresh
 apt_installs
 update_n_refresh
 setup_firewall
-check_snapd_flatpak_installed
+install_snapd_flatpak
 install_many_snaps
 install_many_flatpaks
 install_node_npm_nvm

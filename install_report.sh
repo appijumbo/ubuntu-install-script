@@ -24,7 +24,8 @@ printer_installed="no"
 
 # This contains the functions to provide a report for the installation script
 
-touch report_list
+if [ ! -f report_list ]; then touch report_list; fi
+
 
 clear_lists(){
     rm alias_list_raw flat_list_raw snap_list_raw

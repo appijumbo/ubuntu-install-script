@@ -2,12 +2,12 @@
 clear
 
 # Add report functions
-wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
-
-sudo chmod +x install_report
-
-source install_report.sh
-
+if [ ! -f install_report.sh ] 
+    then 
+        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
+        sudo chmod +x install_report
+        source install_report.sh
+fi
 
 
 
@@ -21,7 +21,6 @@ printf "******************************************************\n"
 ########################################################
 
 # Define Global variables
-
 APPIMAGES_DIR=/opt/appimages
 FLATPAK_DIR=/var/lib/flatpak/app
 
@@ -32,7 +31,6 @@ SNAP_LO_FONT_DIR=/snap/libreoffice/current/usr/share/fonts
 SHARE_FONT_DIR=/usr/share/fonts
 # see FHS (https://bit.ly/2AVScrv) 
 
-
 UPDATE_UBUNTU=sudo apt -qq -y update && sudo apt -qq -y upgrade
 # appears no quiet available flag for pkcon so dev/null it
 UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/null 
@@ -40,8 +38,6 @@ UPDATE_NEON=sudo pkcon -y refresh 1>/dev/null && sudo pkcon -y update 1>/dev/nul
 CURRENT_USER="$(who | cut -d' ' -f1)"  
 # if installed with root privileges ie $sudo ./install_Script then $USER is root
 printf "\nCurrent user is ----> '$CURRENT_USER'\n"
-
-distro_name=""
 
 
 

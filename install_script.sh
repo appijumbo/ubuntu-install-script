@@ -811,7 +811,7 @@ install_abricotine
 install_youtube-dl
 install_gimp_filters
 get_and_install_google_fonts
-install_oh_my_zsh
+# install_oh_my_zsh
 backup_bashrc
 setup_updateme_alias
 add_printer_driver

@@ -122,8 +122,7 @@ apt_installs(){
                 for index in "${APT_LIST[@]}"
                     do
                         sudo apt -y install $index
-                        if [ $(which $index) ]; then echo "$index   Apt" >> report_list; fi
-
+                        #if [ $(which $index) ]; then echo "$index   Apt" >> report_list; fi
                     done
         fi
     
@@ -724,6 +723,7 @@ make_report(){
     report_install_flags
     
     report_distro_name
+    report_apt_list
     report_snap_list
     report_flatpak_list
     report_gufw

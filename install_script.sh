@@ -7,7 +7,7 @@ if [ ! -f install_report.sh ]
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
 fi
 
-sudo chmod +x install_report
+sudo chmod +x install_report.sh
 source install_report.sh
 
 

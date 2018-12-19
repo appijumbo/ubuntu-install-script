@@ -76,7 +76,7 @@ install_snapd_flatpak(){
         print_line
         echo "Flatpak installed\n" >> report_list
         report_restart
-        echo " **** Just installed Flatpaks - REEBOOT REQUIRED !\n"
+        printf " **** Just installed Flatpaks - REEBOOT REQUIRED ! \n"
         exit 1
     fi
 

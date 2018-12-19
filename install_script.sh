@@ -77,7 +77,12 @@ fi
 }
 
 
-
+reboot_me(){
+        printf "**********************************************"
+        printf "Just updated and upgraded REEBOOT REQUIRED ! \n"
+        report_restart
+        exit 1
+}
 
 # Check system is up to date
 update_n_refresh(){
@@ -93,10 +98,7 @@ update_n_refresh(){
     # check if reboot is required
         if [ -f $REBOOT ]
             then 
-                printf "**********************************************"
-                printf "Just updated and upgraded REEBOOT REQUIRED !\n"
-                report_restart
-                exit 1
+                reboot_me
         fi
 }
 
@@ -114,15 +116,12 @@ apt_installs(){
     APT_LIST=(python curl chromium-browser)
         if [ -f $REBOOT ]
             then
-                report_restart
-                printf "**********************************************"
-                printf "Just updated and upgraded REEBOOT REQUIRED !\n" 
-                exit 1
+                reboot_me
             else
                 for index in "${APT_LIST[@]}"
                     do
                         sudo apt -y install $index
-                        #if [ $(which $index) ]; then echo "$index   Apt" >> report_list; fi
+                        #if [ $(which $index) ]; then printf "$index   Apt" >> report_list; fi
                     done
         fi
     
@@ -142,8 +141,8 @@ install_many_snaps(){
 #       but we also want to setup removable media connection ie
 #           $ snap connect foo:removale-media; snap connect bar:removable-media
 #       hence the loop
-    printf "**************************************************\n"
-    printf "Installing Snaps\n"
+    printf "************************************************** \n"
+    printf "Installing Snaps \n"
     SNAPS_=("node --classic --channel=10/stable" libreoffice chromium )
 
     for index in "${SNAPS_[@]}"
@@ -160,9 +159,9 @@ install_many_snaps(){
             
         done
             
-    printf "Snap Apps Installed\n"
+    printf "Snap Apps Installed \n"
     snap list
-    printf "\n**************************************************\n"
+    printf "\n************************************************** \n"
 }
 
 
@@ -171,7 +170,7 @@ install_many_snaps(){
 
 install_many_flatpaks(){
 # Install Flatpak's
-    printf "**************************************************\n"
+    printf "************************************************** \n"
     printf "Installing Flatpaks\n"
     FLATPAKS=(com.abisource.AbiWord org.gimp.GIMP)
 
@@ -183,7 +182,7 @@ install_many_flatpaks(){
         
     printf "Flatpak Apps Installed\n"
     flatpak list
-    printf "\n**************************************************\n"
+    printf "\n************************************************** \n"
 }
 
 
@@ -201,8 +200,8 @@ setup_firewall(){
 
 
 install_node_npm_nvm(){
-    printf "**************************************************\n"
-    printf "Check node installation is working\n"
+    printf "************************************************** \n"
+    printf "Check node installation is working \n"
     
     # The NodeSource-managed Node.js snap contains the Node.js runtime, along the two most widely-used package managers, npm and Yarn.
     
@@ -238,8 +237,8 @@ get_and_install_google_fonts(){
     if [ $google_fonts_installed = "no" ] 
     
         then
-            printf "**************************************************\n"
-            printf "Downloading and installing Google Fonts"
+            printf "************************************************** \n"
+            printf "Downloading and installing Google Fonts \n"
             
             # Get http of all google fonts
             # This was done manually by copying the download URL, via Falkon browser 
@@ -329,8 +328,8 @@ install_gimp_filters(){
     if [ $gimp_filters_installed = "no" ]
         then
 
-        printf "**************************************************\n"
-        printf "Install Gimp 2.8 filter to Gimp 2.10\n"
+        printf "************************************************** \n"
+        printf "Install Gimp 2.8 filter to Gimp 2.10 \n"
         PLUGIN_2_8_PATH="/usr/lib/gimp/2.0/plug-ins"
         if [ ! $(which gimp-plugin-registry) ]; then 
         sudo apt -y install gimp-plugin-registry # get gimp 2_8 and its plugins
@@ -371,8 +370,8 @@ create_appimages_dir(){
     
     if [ $appimages_installed = "no" ]
         then
-            printf "**************************************************\n"
-            printf "Create Appimage Directory\n"
+            printf "************************************************** \n"
+            printf "Create Appimage Directory \n"
             sudo mkdir -p $APPIMAGES_DIR
             sudo chmod +xw $APPIMAGES_DIR
             
@@ -649,7 +648,7 @@ add_printer_driver(){
 # Check external drives are owned by the current owner and group
 setup_external_hd_ownership(){
 
-    echo "Please ensured external drives are mounted?  enter y when done"
+    printf "Please ensured external drives are mounted?  enter y when done"
     read mount_prompt
     if [ $mount_prompt = "y" ]; then
             lsblk | grep $CURRENT_USER
@@ -682,7 +681,7 @@ config_autostarts(){
         #   because .desktop is sequectial(?) append with 'Exec=tomboy' to overide
 
         TOMBOY_DESKTOP_CONFIG=/home/$CURRENT_USER/.config/autostart/tomboy.desktop
-        echo "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
+        printf "Exec=tomboy" >> $TOMBOY_DESKTOP_CONFIG
         printf "\n--> DONE\n"
         
         touch config_autostarts_done  

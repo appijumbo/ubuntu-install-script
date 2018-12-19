@@ -32,13 +32,13 @@ clear_lists(){
 
 
 print_line(){
-    echo "*********************************************\n" >> report_list
+    echo "********************************************* \n" >> report_list
 }
 
 
 report_restart(){
     print_line
-    echo "*******************  RESTARTED **************\n" >> report_list
+    echo "*******************  RESTARTED ************** \n" >> report_list
 }
 
 
@@ -51,7 +51,7 @@ print_distro_name(){
 
 report_distro_name(){
     print_line
-    echo "This distro is $distro_name\n" >> report_list
+    echo "This distro is $distro_name \n" >> report_list
 }
 
 
@@ -64,7 +64,7 @@ install_snapd_flatpak(){
         sudo apt update
         sudo apt -y install snapd
         print_line
-        echo "Snap installed\n" >> report_list
+        echo "Snap installed \n" >> report_list
     fi
 
     if [ ! $(which flatpak) ]; then
@@ -155,15 +155,15 @@ check_ufw_ports_set() {
 
     if [ $ufw_ports_set = "no" ]
       then
-        printf "**************************************************\n"
-        printf "Setup Firewall\n"
+        printf "************************************************** \n"
+        printf "Setup Firewall \n"
         sudo ufw enable
         sudo ufw allow 631/tcp
         sudo ufw allow 1714:1764/udp
         sudo ufw allow 1714:1764/tcp
         sudo ufw reload
         sudo ufw status
-        printf "**************************************************\n"
+        printf "************************************************** \n"
         ufw_ports_set="yes"
     fi
     
@@ -178,8 +178,8 @@ check_ufw_ports_set
         then 
             print_line
             echo "Gufw installed\n" >> report_list
-            if [[ $(sudo ufw status | grep -E "1714:1764/tcp") ]] ; then echo "KDE Connect set: Firewall\n" >> report_list; fi
-            if [[ $(sudo ufw status | grep -E "631/tcp") ]] ; then echo "Printer CUPS set : Firewall\n" >> report_list; fi
+            if [[ $(sudo ufw status | grep -E "1714:1764/tcp") ]] ; then echo "KDE Connect set: Firewall \n" >> report_list; fi
+            if [[ $(sudo ufw status | grep -E "631/tcp") ]] ; then echo "Printer CUPS set : Firewall \n" >> report_list; fi
     fi
     
 }
@@ -203,15 +203,15 @@ report_node(){
     if [ $node_installed = "yes" ]
         then 
             print_line
-            echo "Node Installed :   Node\n" >> report_list ; fi
+            echo "Node Installed :   Node \n" >> report_list ; fi
         
     if [ $npm_installed = "yes" ]
         then
-            echo "NPM :   Node\n" >> report_list ; fi
+            echo "NPM :   Node \n" >> report_list ; fi
         
     if [ $yarn_installed = "yes" ]
         then
-            echo "Yarn   : Node\n" >> report_list ; fi
+            echo "Yarn   : Node \n" >> report_list ; fi
 }
 
 
@@ -235,7 +235,7 @@ report_google_fonts_installed(){
     print_line
     
     if [ $google_fonts_installed = "yes" ]
-        then echo "Google Fonts   :   Fonts\n" >> report_list
+        then echo "Google Fonts   :   Fonts \n" >> report_list
     fi
 }
 
@@ -260,7 +260,7 @@ report_gimp(){
     if [ $gimp_filters_installed = "yes" ]
         then
             print_line
-            echo "Gimp 2.8 Filters added   :   Gimp\n" >> report_list
+            echo "Gimp 2.8 Filters added   :   Gimp \n" >> report_list
     fi
 }
 
@@ -313,7 +313,7 @@ report_etcher(){
     if [ $etcher_installed = "yes" ]
         then
             print_line
-            echo "Etcher : Appimage\n" >> report_list
+            echo "Etcher : Appimage \n" >> report_list
     fi
 }
 
@@ -338,7 +338,7 @@ report_gitit(){
     if [ $gitit_installed = "yes" ]
         then
             printf_line
-            echo "Git-it   :   Git\n" >> report_list
+            echo "Git-it   :   Git \n" >> report_list
     fi
 
 }
@@ -367,7 +367,7 @@ report_ring(){
     if [ $ring_installed = "yes" ]
         then
             print_line
-            echo "Ring :   Communication\n" >> report_list
+            echo "Ring :   Communication \n" >> report_list
     fi
 
 }
@@ -394,7 +394,7 @@ report_abricotine(){
     if [ $abricotine_installed = "yes" ]
         then 
             print_line
-            echo "Abricotine   :   Markdown editor\n" >> report_list
+            echo "Abricotine   :   Markdown editor \n" >> report_list
     fi
 }
 
@@ -418,7 +418,7 @@ report_youtube-dl(){
 
     if [ $youtube_dl_installed = "yes" ]
         then 
-            echo "youtube-dl   :   media downloader\n" >> report_list
+            echo "youtube-dl   :   media downloader \n" >> report_list
     fi
 }
 
@@ -448,12 +448,12 @@ report_oh-my-zsh(){
 
     if [ $zsh_installed = "yes" ]
         then 
-            echo "zsh   :   z shell\n" >> report_list
+            echo "zsh   :   z shell \n" >> report_list
     fi
     
     if [ $oh_my_zsh_installed = "yes" ]
         then 
-            echo "oh-my-zsh :   z shell framework\n" >> report_list
+            echo "oh-my-zsh :   z shell framework \n" >> report_list
     fi
     
 }
@@ -496,8 +496,8 @@ report_printer(){
     print_line
 
     if [ $printer_installed = "yes" ]
-        then echo "$(lpstat -p | awk '{print $2}')    :   Printer\n" >> report_list
-        else echo "No Printer attached  :   Printer\n" >> report_list
+        then echo "$(lpstat -p | awk '{print $2}')    :   Printer \n" >> report_list
+        else echo "No Printer attached  :   Printer \n" >> report_list
         
     fi
 }
@@ -510,11 +510,11 @@ report_autostarts(){
 
     if [ -f config_autostarts ]
     then
-        echo "yakuake off   :   autostart\n" >> report_list
+        echo "yakuake off   :   autostart \n" >> report_list
     
         if [ cat $TOMBOY_DESKTOP_CONFIG | tail -n 1 | grep "Exec=tomboy" ]
     
-            then echo "Tomboy Notes off  :   autostart\n" >> report_list
+            then echo "Tomboy Notes off  :   autostart \n" >> report_list
         fi
     fi
 }
@@ -522,24 +522,24 @@ report_autostarts(){
 
 report_install_flags(){
 
-    echo "distro_name $distro_name\n" >> report_list
-    echo "ufw_ports_set $ufw_ports_set\n" >> report_list
-    echo "gufw_installed $gufw_installed\n" >> report_list
-    echo "node_installed $node_installed\n" >> report_list
-    echo "npm_installed $npm_installed\n" >> report_list
-    echo "yarn_installed $yarn_installed\n" >> report_list
-    echo "google_fonts_installed $google_fonts_installed\n" >> report_list
-    echo "gimp_filters_installed $gimp_filters_installed\n" >> report_list
-    echo "appimages_installed $appimages_installed\n" >> report_list
-    echo "etcher_installed $etcher_installed\n" >> report_list
-    echo "gitit_installed $gitit_installed\n" >> report_list
-    echo "ring_installed $ring_installed\n" >> report_list
-    echo "abricotine_installed $abricotine_installed\n" >> report_list
-    echo "youtube_dl_installed $youtube_dl_installed\n" >> report_list
-    echo "zsh_installed $zsh_installed\n" >> report_list
-    echo "oh_my_zsh_installed $oh_my_zsh_installed\n" >> report_list
-    echo "bash_aliases_installed $bash_aliases_installed\n" >> report_list
-    echo "printer_installed $printer_installed\n" >> report_list
+    echo "distro_name $distro_name \n" >> report_list
+    echo "ufw_ports_set $ufw_ports_set \n" >> report_list
+    echo "gufw_installed $gufw_installed \n" >> report_list
+    echo "node_installed $node_installed \n" >> report_list
+    echo "npm_installed $npm_installed \n" >> report_list
+    echo "yarn_installed $yarn_installed \n" >> report_list
+    echo "google_fonts_installed $google_fonts_installed \n" >> report_list
+    echo "gimp_filters_installed $gimp_filters_installed \n" >> report_list
+    echo "appimages_installed $appimages_installed \n" >> report_list
+    echo "etcher_installed $etcher_installed \n" >> report_list
+    echo "gitit_installed $gitit_installed \n" >> report_list
+    echo "ring_installed $ring_installed \n" >> report_list
+    echo "abricotine_installed $abricotine_installed \n" >> report_list
+    echo "youtube_dl_installed $youtube_dl_installed \n" >> report_list
+    echo "zsh_installed $zsh_installed \n" >> report_list
+    echo "oh_my_zsh_installed $oh_my_zsh_installed \n" >> report_list
+    echo "bash_aliases_installed $bash_aliases_installed \n" >> report_list
+    echo "printer_installed $printer_installed \n" >> report_list
 }
 
 

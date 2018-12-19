@@ -115,6 +115,7 @@ apt_installs(){
     APT_LIST=(python curl chromium-browser)
         if [ -f $REBOOT ]
             then
+                report_restart
                 printf "**********************************************"
                 printf "Just updated and upgraded REEBOOT REQUIRED !\n" 
                 exit 1
@@ -607,8 +608,6 @@ _EOF_
 
 
 
-
-
 # PRINTER INSTALLATION - Brother DCPJ-140W 
 add_printer_driver(){
     
@@ -649,8 +648,6 @@ add_printer_driver(){
 
 
 
-
-
 # Check external drives are owned by the current owner and group
 setup_external_hd_ownership(){
 
@@ -663,7 +660,6 @@ setup_external_hd_ownership(){
             # └─sdb3   8:19   0   4.4T  0 part /media/tom/F_Drive
     fi
 }
-
 
 
 
@@ -699,10 +695,7 @@ config_autostarts(){
 
 
 
-
-
-
-make_report(){
+print_install_flags(){
 
     printf "distro_name $distro_name\n"
     printf "ufw_ports_set $ufw_ports_set\n"
@@ -722,7 +715,15 @@ make_report(){
     printf "oh_my_zsh_installed $oh_my_zsh_installed\n"
     printf "bash_aliases_installed $bash_aliases_installed\n"
     printf "printer_installed $printer_installed\n"
+}
 
+
+make_report(){
+
+    print_install_flags
+    
+    report_install_flags
+    
     report_distro_name
     report_snap_list
     report_flatpak_list
@@ -763,33 +764,7 @@ check_oh_my_zsh_installed
 check_bash_aliases_installed
 check_printer_installed
 
-
-
-
-
-printf "distro_name $distro_name"
-printf "ufw_ports_set $ufw_ports_set"
-printf "gufw_installed $gufw_installed"
-printf "node_installed $node_installed"
-printf "npm_installed $npm_installed"
-printf "yarn_installed $yarn_installed"
-printf "google_fonts_installed $google_fonts_installed"
-printf "gimp_filters_installed $gimp_filters_installed"
-printf "appimages_installed $appimages_installed"
-printf "etcher_installed $etcher_installed"
-printf "gitit_installed $gitit_installed"
-printf "ring_installed $ring_installed"
-printf "abricotine_installed $abricotine_installed"
-printf "youtube_dl_installed $youtube_dl_installed"
-printf "zsh_installed $zsh_installed"
-printf "oh_my_zsh_installed $oh_my_zsh_installed"
-printf "bash_aliases_installed $bash_aliases_installed"
-printf "printer_installed $printer_installed"
-
-
-
-
-
+print_install_flags
 
 get_distro_name
 update_n_refresh
@@ -817,7 +792,6 @@ config_autostarts
 clear_lists
 make_report
 display_report
-
 
 exit 0
 

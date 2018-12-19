@@ -78,7 +78,7 @@ fi
 
 
 reboot_me(){
-        printf "**********************************************"
+        printf "********************************************** \n"
         printf "Just updated and upgraded REEBOOT REQUIRED ! \n"
         report_restart
         exit 1
@@ -726,7 +726,7 @@ make_report(){
     report_flatpak_list
     report_gufw
     report_node
-    report_google_fonts
+    report_google_fonts_installed
     report_gimp
     report_appimages
     report_gitit
@@ -749,12 +749,17 @@ check_if_distro_is_ubuntu
 check_ufw_ports_set
 check_gufw_installed
 check_node_installed
+
+
 check_google_fonts_installed
 check_gimp_filters_installed
 check_appimages_installed
 check_etcher_installed
 check_gitit_installed
 check_ring_installed
+
+
+
 check_abricotine_installed
 check_youtube_dl_installed
 check_oh_my_zsh_installed

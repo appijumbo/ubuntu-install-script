@@ -258,9 +258,7 @@ report_gimp(){
     print_line
     
     if [ $gimp_filters_installed = "yes" ]
-        then
-            print_line
-            printf "Gimp 2.8 Filters added   :   Gimp \n" >> report_list
+        then printf "Gimp 2.8 Filters added   :   Gimp \n" >> report_list
     fi
 }
 
@@ -287,9 +285,8 @@ report_appimages(){
     
     if [ $appimages_installed = "yes" ]
         then 
-            printf_line
             ls -1 /opt/appimages | cut -d'-' -f1 > appimage_raw_list
-            appimage_raw_list >> report_list
+            cat appimage_raw_list >> report_list
     fi
 }
 
@@ -299,7 +296,7 @@ report_appimages(){
 
 check_etcher_installed(){
 
-    if [ -f /opt/appimages/Etcher/*.AppImage ] 
+    if [ -f /opt/appimages/Etcher/etcher*.AppImage ] || [ -f /opt/appimages/etcher*.AppImage ]
         then etcher_installed="yes"
         else etcher_installed="no"
     fi
@@ -336,9 +333,7 @@ report_gitit(){
     print_line
     
     if [ $gitit_installed = "yes" ]
-        then
-            printf_line
-            printf "Git-it   :   Git \n" >> report_list
+        then printf "Git-it   :   Git \n" >> report_list
     fi
 
 }
@@ -347,10 +342,9 @@ report_gitit(){
 
 
 
-
 check_ring_installed(){
 
-    if [ -f /usr/bin/ring.cx ]
+    if [[ $(whereis ring | grep -E "/usr/bin/ring.cx") ]]
         then ring_installed="yes"
         else ring_installed="no"
     fi
@@ -476,7 +470,7 @@ report_aliases(){
     cat /home/$CURRENT_USER/.bash_aliases | cut -d' ' -f2 | cut -d'=' -f1 >> alias_list_raw
     sed -i '/^$/d' alias_list_raw
     printf "Aliases added :   \n" >> report_list
-    alias_list_raw >> report_list
+    cat alias_list_raw >> report_list
 }
 
 

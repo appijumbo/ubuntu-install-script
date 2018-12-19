@@ -74,9 +74,9 @@ install_snapd_flatpak(){
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo touch /var/run/flatpak-requires-reboot
         print_line
-        printf "Flatpak installed \n" >> report_list
+        printf "Flatpak downloader tool installed \n" >> report_list
         report_restart
-        printf " **** Just installed Flatpaks - REEBOOT REQUIRED ! \n"
+        printf " **** REEBOOT REQUIRED ! \n"
         exit 1
     fi
 

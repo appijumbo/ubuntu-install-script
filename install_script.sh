@@ -470,7 +470,7 @@ install_ring(){
             printf "**************************************************\n"
             printf "Download and Install GNU Ring\n"
     
-            ring_url="https://dl.ring.cx/ubuntu_18.04"
+            ring_url="https://dl.ring.cx/ring-manual/ubuntu_18.04/"
             ring_file="ring-all_amd64.deb"
     
             wget -O /home/$CURRENT_USER/Downloads/$ring_file $ring_url/$ring_file

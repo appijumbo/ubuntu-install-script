@@ -229,6 +229,7 @@ report_google_fonts_installed(){
 
 
 check_gimp_filters_installed(){
+
     if [ -d /var/lib/flatpak/app/org.gimp.GIMP/current/active/files/lib/gimp/2.0/plug-ins/wavelet-denoise ] || [ -e /usr/lib/gimp/2.0/plug-ins/wavelet-denoise ]
         then gimp_filters_installed="yes"
         else gimp_filters_installed="no"
@@ -253,6 +254,7 @@ report_gimp(){
 
 
 check_appimages_installed(){
+
     if [ -d /opt/appimages ]
         then appimages_installed="yes"
         else appimages_installed="no"
@@ -467,10 +469,9 @@ report_aliases(){
 check_printer_installed(){
 
     if [ $(lpstat -p | grep -E "lpstat: No destinations added.") ]
-        then printer_installed="no"
-        else printer_installed="yes"
+        then printer_installed="yes"
+        else printer_installed="no"
     fi
-
 
 }
 
@@ -490,7 +491,6 @@ report_printer(){
 
 report_autostarts(){
 
-    
     print_line
 
     if [ -f config_autostarts ]
@@ -508,7 +508,9 @@ report_autostarts(){
 
 
 display_report(){
+
 cat report_list
+
 }
 
 

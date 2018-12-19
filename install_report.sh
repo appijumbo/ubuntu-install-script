@@ -32,26 +32,26 @@ clear_lists(){
 
 
 print_line(){
-    printf "\n*********************************************\n" >> report_list
+    echo "*********************************************\n" >> report_list
 }
 
 
 report_restart(){
     print_line
-    printf "\n*******************  RESTARTED **************\n" >> report_list
+    echo "*******************  RESTARTED **************\n" >> report_list
 }
 
 
 
 print_distro_name(){
-    printf "This distro is $distro_name\n"
+    echo "This distro is $distro_name\n"
 }
 
 
 
 report_distro_name(){
     print_line
-    printf "This distro is $distro_name\n" >> report_list
+    echo "This distro is $distro_name\n" >> report_list
 }
 
 
@@ -63,7 +63,8 @@ install_snapd_flatpak(){
     if [ ! $(which snap) ]; then
         sudo apt update
         sudo apt -y install snapd
-        echo "Snap installed" >> report_list
+        print_line
+        echo "Snap installed\n" >> report_list
     fi
 
     if [ ! $(which flatpak) ]; then
@@ -72,12 +73,27 @@ install_snapd_flatpak(){
         sudo apt -y install flatpak gnome-software-plugin-flatpak
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo touch /var/run/flatpak-requires-reboot
-        echo "Flatpak installed" >> report_list
+        print_line
+        echo "Flatpak installed\n" >> report_list
         report_restart
-        printf "\n **** Just installed Flatpaks - REEBOOT REQUIRED !\n"
+        echo " **** Just installed Flatpaks - REEBOOT REQUIRED !\n"
         exit 1
     fi
 
+}
+
+
+
+get_apt_list(){
+    comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u) > apt_list_raw
+}
+
+
+
+report_apt_list(){
+get_apt_list
+print_line
+cat apt_list_raw >> report_list
 }
 
 
@@ -401,7 +417,8 @@ report_youtube-dl(){
     print_line
 
     if [ $youtube_dl_installed = "yes" ]
-        then echo "youtube-dl   :   media downloader\n" >> report_list
+        then 
+            echo "youtube-dl   :   media downloader\n" >> report_list
     fi
 }
 
@@ -493,7 +510,7 @@ report_autostarts(){
 
     if [ -f config_autostarts ]
     then
-        echo "yakuake off   :   autostart" >> report_list
+        echo "yakuake off   :   autostart\n" >> report_list
     
         if [ cat $TOMBOY_DESKTOP_CONFIG | tail -n 1 | grep "Exec=tomboy" ]
     

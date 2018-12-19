@@ -5,11 +5,10 @@ clear
 if [ ! -f install_report.sh ] 
     then 
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
-        sudo chmod +x install_report
-        source install_report.sh
 fi
 
-
+sudo chmod +x install_report
+source install_report.sh
 
 
 printf "******************************************************\n"

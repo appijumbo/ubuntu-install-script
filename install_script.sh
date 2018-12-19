@@ -769,8 +769,8 @@ apt_installs
 update_n_refresh
 setup_firewall
 install_snapd_flatpak
-install_many_snaps
 install_many_flatpaks
+install_many_snaps
 install_node_npm_nvm
 create_appimages_dir
 install_etcher

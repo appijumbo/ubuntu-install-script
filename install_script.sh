@@ -694,7 +694,6 @@ config_autostarts(){
 
 print_install_flags(){
 
-    printf "distro_name $distro_name\n"
     printf "ufw_ports_set $ufw_ports_set\n"
     printf "gufw_installed $gufw_installed\n"
     printf "node_installed $node_installed\n"

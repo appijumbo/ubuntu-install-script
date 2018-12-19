@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CURRENT_USER="$(who | cut -d' ' -f1)"  
-distro_name=""
+distro_name="UNKNOWN"
 ufw_ports_set="no"
 gufw_installed="no"
 node_installed="no"
@@ -21,7 +21,6 @@ bash_aliases_installed="no"
 printer_installed="no"
 
 
-
 # This contains the functions to provide a report for the installation script
 
 if [ ! -f report_list ]; then touch report_list; fi
@@ -34,15 +33,13 @@ clear_lists(){
 
 print_line(){
     printf "\n\n" >> report_list
-    printf "**********************************************************" >> report_list
-    printf "**********************************************************" >> report_list
-    printf "\n\n" >> report_list
+    printf "*********************************************" >> report_list
 }
 
 
 report_restart(){
     print_line
-    printf "*******************  RESTARTED *******************\n\n\n" >> report_list
+    printf "\n*******************  RESTARTED **************\n" >> report_list
 }
 
 
@@ -63,6 +60,7 @@ report_distro_name(){
 
 # Ensure Snap and Flatpak tools are installed
 install_snapd_flatpak(){
+
     if [ ! $(which snap) ]; then
         sudo apt update
         sudo apt -y install snapd
@@ -76,6 +74,7 @@ install_snapd_flatpak(){
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo touch /var/run/flatpak-requires-reboot
         echo "Flatpak installed" >> report_list
+        report_restart
         printf "\n **** Just installed Flatpaks - REEBOOT REQUIRED !\n"
         exit 1
     fi
@@ -104,7 +103,7 @@ sed -i '/gtk.Gtk3theme/d' ./flat_list_raw
 report_flatpak_list(){
 get_flatpak_list
 print_line
-flat_list_raw >> report_list
+cat flat_list_raw >> report_list
 }
 
 
@@ -124,7 +123,7 @@ sed -i '/core*/d' ./snap_list_raw
 report_snap_list(){
 get_snap_list
 print_line
-snap_list_raw >> report_list
+cat snap_list_raw >> report_list
 }
 
 
@@ -164,8 +163,8 @@ check_ufw_ports_set
         then 
             print_line
             echo "Gufw installed" >> report_list
-            if [ $(sudo ufw status | grep -E "1714:1764/tcp") ] ; then echo "KDE Connect set: Firewall" >> report_list; fi
-            if [ $(sudo ufw status | grep -E "631/tcp") ] ; then echo "Printer CUPS set : Firewall" >> report_list; fi
+            if [[ $(sudo ufw status | grep -E "1714:1764/tcp") ]] ; then echo "KDE Connect set: Firewall" >> report_list; fi
+            if [[ $(sudo ufw status | grep -E "631/tcp") ]] ; then echo "Printer CUPS set : Firewall" >> report_list; fi
     fi
     
 }
@@ -505,6 +504,27 @@ report_autostarts(){
 }
 
 
+report_install_flags(){
+
+    echo "distro_name $distro_name\n" >> report_list
+    echo "ufw_ports_set $ufw_ports_set\n" >> report_list
+    echo "gufw_installed $gufw_installed\n" >> report_list
+    echo "node_installed $node_installed\n" >> report_list
+    echo "npm_installed $npm_installed\n" >> report_list
+    echo "yarn_installed $yarn_installed\n" >> report_list
+    echo "google_fonts_installed $google_fonts_installed\n" >> report_list
+    echo "gimp_filters_installed $gimp_filters_installed\n" >> report_list
+    echo "appimages_installed $appimages_installed\n" >> report_list
+    echo "etcher_installed $etcher_installed\n" >> report_list
+    echo "gitit_installed $gitit_installed\n" >> report_list
+    echo "ring_installed $ring_installed\n" >> report_list
+    echo "abricotine_installed $abricotine_installed\n" >> report_list
+    echo "youtube_dl_installed $youtube_dl_installed\n" >> report_list
+    echo "zsh_installed $zsh_installed\n" >> report_list
+    echo "oh_my_zsh_installed $oh_my_zsh_installed\n" >> report_list
+    echo "bash_aliases_installed $bash_aliases_installed\n" >> report_list
+    echo "printer_installed $printer_installed\n" >> report_list
+}
 
 
 display_report(){

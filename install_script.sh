@@ -353,6 +353,7 @@ install_gimp_filters(){
             then
                 sudo chown $CURRENT_USER:$CURRENT_USER -R $PLUGIN_FLATPAK_PATH
                 cp -r $PLUGIN_2_8_PATH/* $PLUGIN_FLATPAK_PATH
+                printf "\n ===> Gimp filters copied ===> \n"
         fi
 
         # remove old gimp 2_8

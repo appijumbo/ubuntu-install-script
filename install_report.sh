@@ -32,8 +32,7 @@ clear_lists(){
 
 
 print_line(){
-    printf "\n\n" >> report_list
-    printf "*********************************************" >> report_list
+    printf "\n*********************************************\n" >> report_list
 }
 
 
@@ -162,9 +161,9 @@ check_ufw_ports_set
     if [ $ufw_ports_set = "yes" ]
         then 
             print_line
-            echo "Gufw installed" >> report_list
-            if [[ $(sudo ufw status | grep -E "1714:1764/tcp") ]] ; then echo "KDE Connect set: Firewall" >> report_list; fi
-            if [[ $(sudo ufw status | grep -E "631/tcp") ]] ; then echo "Printer CUPS set : Firewall" >> report_list; fi
+            echo "Gufw installed\n" >> report_list
+            if [[ $(sudo ufw status | grep -E "1714:1764/tcp") ]] ; then echo "KDE Connect set: Firewall\n" >> report_list; fi
+            if [[ $(sudo ufw status | grep -E "631/tcp") ]] ; then echo "Printer CUPS set : Firewall\n" >> report_list; fi
     fi
     
 }
@@ -188,15 +187,15 @@ report_node(){
     if [ $node_installed = "yes" ]
         then 
             print_line
-            echo "Node Installed :   Node" >> report_list ; fi
+            echo "Node Installed :   Node\n" >> report_list ; fi
         
     if [ $npm_installed = "yes" ]
         then
-            echo "NPM :   Node" >> report_list ; fi
+            echo "NPM :   Node\n" >> report_list ; fi
         
     if [ $yarn_installed = "yes" ]
         then
-            echo "Yarn   : Node" >> report_list ; fi
+            echo "Yarn   : Node\n" >> report_list ; fi
 }
 
 
@@ -220,7 +219,7 @@ report_google_fonts_installed(){
     print_line
     
     if [ $google_fonts_installed = "yes" ]
-        then echo "Google Fonts   :   Fonts" >> report_list
+        then echo "Google Fonts   :   Fonts\n" >> report_list
     fi
 }
 
@@ -245,7 +244,7 @@ report_gimp(){
     if [ $gimp_filters_installed = "yes" ]
         then
             print_line
-            echo "Gimp 2.8 Filters added   :   Gimp" >> report_list
+            echo "Gimp 2.8 Filters added   :   Gimp\n" >> report_list
     fi
 }
 
@@ -298,7 +297,7 @@ report_etcher(){
     if [ $etcher_installed = "yes" ]
         then
             print_line
-            echo "Etcher : Appimage" >> report_list
+            echo "Etcher : Appimage\n" >> report_list
     fi
 }
 
@@ -323,7 +322,7 @@ report_gitit(){
     if [ $gitit_installed = "yes" ]
         then
             printf_line
-            echo "Git-it   :   Git" >> report_list
+            echo "Git-it   :   Git\n" >> report_list
     fi
 
 }
@@ -352,7 +351,7 @@ report_ring(){
     if [ $ring_installed = "yes" ]
         then
             print_line
-            echo "Ring :   Communication" >> report_list
+            echo "Ring :   Communication\n" >> report_list
     fi
 
 }
@@ -379,7 +378,7 @@ report_abricotine(){
     if [ $abricotine_installed = "yes" ]
         then 
             print_line
-            echo "Abricotine   :   Markdown editor" >> report_list
+            echo "Abricotine   :   Markdown editor\n" >> report_list
     fi
 }
 
@@ -402,7 +401,7 @@ report_youtube-dl(){
     print_line
 
     if [ $youtube_dl_installed = "yes" ]
-        then echo "youtube-dl   :   media downloader" >> report_list
+        then echo "youtube-dl   :   media downloader\n" >> report_list
     fi
 }
 
@@ -432,12 +431,12 @@ report_oh-my-zsh(){
 
     if [ $zsh_installed = "yes" ]
         then 
-            echo "zsh   :   z shell" >> report_list
+            echo "zsh   :   z shell\n" >> report_list
     fi
     
     if [ $oh_my_zsh_installed = "yes" ]
         then 
-            echo "oh-my-zsh :   z shell framework" >> report_list
+            echo "oh-my-zsh :   z shell framework\n" >> report_list
     fi
     
 }
@@ -459,7 +458,7 @@ report_aliases(){
 
     cat /home/$CURRENT_USER/.bash_aliases | cut -d' ' -f2 | cut -d'=' -f1 >> alias_list_raw
     sed -i '/^$/d' alias_list_raw
-    echo "Aliases added :   " >> report_list
+    echo "Aliases added :   \n" >> report_list
     alias_list_raw >> report_list
 }
 
@@ -480,8 +479,8 @@ report_printer(){
     print_line
 
     if [ $printer_installed = "yes" ]
-        then echo "$(lpstat -p | awk '{print $2}')    :   Printer" >> report_list
-        else echo "No Printer attached  :   Printer" >> report_list
+        then echo "$(lpstat -p | awk '{print $2}')    :   Printer\n" >> report_list
+        else echo "No Printer attached  :   Printer\n" >> report_list
         
     fi
 }
@@ -498,7 +497,7 @@ report_autostarts(){
     
         if [ cat $TOMBOY_DESKTOP_CONFIG | tail -n 1 | grep "Exec=tomboy" ]
     
-            then echo "Tomboy Notes off  :   autostart" >> report_list
+            then echo "Tomboy Notes off  :   autostart\n" >> report_list
         fi
     fi
 }

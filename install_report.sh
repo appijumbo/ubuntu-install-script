@@ -318,7 +318,7 @@ report_etcher(){
 
 check_gitit_installed(){
 
-    if [ -f /usr/share/Git-it-linux-x64/Git-it ] || [ -f /home/$CURRENT_USER/.local/share/Git-it-linux-x64/Git-it ]
+    if [ -f /usr/share/Git-it-Linux-x64/Git-it ] || [ -f /home/$CURRENT_USER/.local/share/Git-it-Linux-x64/Git-it ]
         then gitit_installed="yes"
         else gitit_installed="no"
     fi

@@ -17,7 +17,7 @@ This install script installs
 Installation by downloading the installation_script
 
 ```
-cd Downloads
+cd ~/Downloads
 
 wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/master/install_script.sh 
 

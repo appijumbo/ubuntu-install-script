@@ -537,6 +537,9 @@ report_install_flags(){
 }
 
 
+
+# In future the display_report could create a HTML file with the data inside, then run a browser eg firefox to display it.
+
 display_report(){
 
 cat report_list

@@ -136,12 +136,16 @@ while read flatpaks_
         FLATPAKS+=" "
     done < flatpak_install_list
 
-printf "APT_LIST -->\n"
+printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+printf "Apt's ti install \n"
 printf "${APT_LIST[*]}"
-printf "SNAPS_ -->\n"
+printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+printf "Snaps to install \n"
 printf "${SNAPS_[*]}"
-printf "FLATPAKS -->\n"
+printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+printf "Flatpaks to install \n"
 printf "${FLATPAKS[*]}"
+printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
 
 }
 

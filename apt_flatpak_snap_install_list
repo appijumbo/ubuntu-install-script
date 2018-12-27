@@ -1,0 +1,76 @@
+python:apt
+python3:apt
+curl:apt
+git:apt
+ttf-mscorefonts-installer:apt
+gufw:apt
+kate:apt
+yakuake:apt
+tomboy:apt
+virtualbox:apt
+virtualbox-guest-additions-iso:apt
+virtualbox-ext-pack:apt
+falkon:apt
+filelight:apt
+redshift:apt
+speedtest-cli:apt
+inxi:apt
+htop:apt
+latte-dock:apt
+simple-scan:apt
+kdevelop:apt
+mysql-workbench:apt
+xsane kio-extras:apt
+ffmpegthumbs:apt
+kffmpegthumbnailer:apt
+gnome-xcf-thumbnailer:apt
+libopenraw7:apt
+libopenrawgnome7:apt
+gnome-raw-thumbnailer:apt
+zsh:apt
+fonts-powerline:apt
+imagemagick:apt
+chromium-browser:apt
+com.abisource.AbiWord:flatpak
+org.audacityteam.Audacity:flatpak
+org.kde.kdenlive:flatpak
+org.gimp.GIMP:flatpak
+org.filezillaproject.Filezilla:flatpak
+io.github.Hexchat:flatpak
+de.haeckerfelix.gradio:flatpak
+io.github.rinigus.OSMScoutServer:flatpak
+com.calibre_ebook.calibre:flatpak
+im.riot.Riot:flatpak
+org.kde.krita:flatpak
+io.github.wereturtle.ghostwriter:flatpak
+org.gottcode.FocusWriter:flatpak
+com.bitwarden.desktop:flatpak
+org.gnome.Boxes:flatpak
+"thunderbird --beta":snap
+"telegram-desktop":snap
+"node --classic --channel=10/stable":snap
+"grv":snap
+"eog":snap
+"vlc":snap
+"ffmpeg":snap
+"mpv --beta":snap
+"postgresql10":snap
+"obs-studio":snap
+"handbrake-jz":snap
+"vidcutter":snap
+"libreoffice":snap
+"chromium":snap
+"keepassxc":snap
+"mailspring":snap
+"konversation":snap
+"slack --classic":snap
+"vscode --classic":snap
+"slack --classic":snap
+"insomnia":snap
+"postman":snap
+"gravit-designer":snap
+"inkscape":snap
+"gnome-calendar":snap
+"gnome-calculator":snap
+"wire":snap
+"shotcut --classic":snap

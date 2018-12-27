@@ -122,19 +122,22 @@ while read apts_
     do 
         APT_LIST+=$apts_
         APT_LIST+=" "
-    done < apt_install_list
+    # done < apt_install_list
+    done < grep -E "^*:apt" apt_flatpak_snap_install_list | cut -d':' -f1
 
 while read snaps_
     do
         SNAPS_+=$snaps_
         SNAPS_+=" "
-    done < snap_install_list
+    # done < snap_install_list
+    done < grep -E "^*:snap" apt_flatpak_snap_install_list | cut -d':' -f1
 
 while read flatpaks_
     do 
         FLATPAKS+=$flatpaks_
         FLATPAKS+=" "
-    done < flatpak_install_list
+    # done < flatpak_install_list
+    done < grep -E "^*:flatpak" apt_flatpak_snap_install_list | cut -d':' -f1
 
 printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
 printf "Apt's ti install \n"

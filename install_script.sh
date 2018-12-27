@@ -5,9 +5,6 @@ clear
 if [ ! -f install_report.sh ] 
     then 
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
-        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/apt_install_list
-        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/flatpak_install_list
-        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/snap_install_list
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/apt_flatpak_snap_install_list
 fi
 
@@ -117,37 +114,44 @@ update_n_refresh(){
 
 #  sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
 
+create_install_lists () {
+    grep -E "^*:apt" apt_flatpak_snap_install_list | cut -d':' -f1 > apt_install_list
+    grep -E "^*:snap" apt_flatpak_snap_install_list | cut -d':' -f1 > snap_install_list
+    grep -E "^*:flatpak" apt_flatpak_snap_install_list | cut -d':' -f1 > flatpak_install_list
+}
+
+
+
 read_from_install_file () {
+
+create_install_lists
 
 while read apts_
     do 
         APT_LIST+=$apts_
         APT_LIST+=" "
-    # done < apt_install_list
-    done < grep -E "^*:apt" apt_flatpak_snap_install_list | cut -d':' -f1
+    done < apt_install_list
 
 while read snaps_
     do
         SNAPS_+=$snaps_
         SNAPS_+=" "
-    # done < snap_install_list
-    done < grep -E "^*:snap" apt_flatpak_snap_install_list | cut -d':' -f1
+    done < snap_install_list
 
 while read flatpaks_
     do 
         FLATPAKS+=$flatpaks_
         FLATPAKS+=" "
-    # done < flatpak_install_list
-    done < grep -E "^*:flatpak" apt_flatpak_snap_install_list | cut -d':' -f1
+    done < flatpak_install_list
 
 printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
-printf "Apt's ti install \n"
+printf "Apt's to install \n"
 printf "${APT_LIST[*]}"
 printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
-printf "Snaps to install \n"
+printf "Snap's to install \n"
 printf "${SNAPS_[*]}"
 printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
-printf "Flatpaks to install \n"
+printf "Flatpak's to install \n"
 printf "${FLATPAKS[*]}"
 printf "\n\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
 

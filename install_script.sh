@@ -126,7 +126,7 @@ while read apts_
 
 while read snaps_
     do
-        SNAPS_+="echo $($snaps_)"
+        SNAPS_+="cat $($snaps_)"
         SNAPS_+=" "
     done < snap_install_list
 

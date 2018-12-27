@@ -124,13 +124,13 @@ while read apts_
         APT_LIST+=" "
     done < apt_install_list
 
-while read snaps
+while read snaps_
     do
         SNAPS_+="$snaps_"
         SNAPS_+=" "
     done < snap_install_list
 
-while read snaps
+while read flatpaks_
     do 
         FLATPAKS+="$flatpaks_"
         FLATPAKS+=" "

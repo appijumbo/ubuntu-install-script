@@ -41,6 +41,11 @@ CURRENT_USER="$(who | cut -d' ' -f1)"
 # if installed with root privileges ie $sudo ./install_Script then $USER is root
 printf "\nCurrent user is ----> '$CURRENT_USER'\n"
 
+# Store installation package names for Apt, Snap and Flatpak in arrays
+APT_LIST=()
+SNAPS_=()
+FLATPAKS=()
+
 
 
 get_distro_name(){

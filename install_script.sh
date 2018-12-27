@@ -168,7 +168,6 @@ install_many_snaps(){
 #       hence the loop
     printf "************************************************** \n"
     printf "Installing Snaps \n"
-    SNAPS_=("node --classic --channel=10/stable" libreoffice chromium )
 
     for index in "${SNAPS_[@]}"
         do
@@ -197,8 +196,6 @@ install_many_flatpaks(){
 # Install Flatpak's
     printf "************************************************** \n"
     printf "Installing Flatpaks\n"
-    FLATPAKS=(com.abisource.AbiWord org.gimp.GIMP)
-
 
     for index in "${FLATPAKS[@]}"
         do

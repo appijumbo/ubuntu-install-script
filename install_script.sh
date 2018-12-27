@@ -119,17 +119,21 @@ update_n_refresh(){
 read_from_install_file () {
 
 while read apts_
-    do APT_LIST+="$apts_"
+    do 
+        APT_LIST+="$apts_"
+        APT_LIST+=" "
     done < apt_install_list
 
-
 while read snaps
-    do SNAPS_+="$snaps_"
+    do
+        SNAPS_+="$snaps_"
+        SNAPS_+=" "
     done < snap_install_list
 
-
 while read snaps
-    do FLATPAKS+="$flatpaks_"
+    do 
+        FLATPAKS+="$flatpaks_"
+        FLATPAKS+=" "
     done < flatpak_install_list
 
 printf "APT_LIST -->\n"

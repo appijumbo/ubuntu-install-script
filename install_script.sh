@@ -120,19 +120,19 @@ read_from_install_file () {
 
 while read apts_
     do 
-        APT_LIST+="$apts_"
+        APT_LIST+=$apts_
         APT_LIST+=" "
     done < apt_install_list
 
 while read snaps_
     do
-        SNAPS_+="$snaps_"
+        SNAPS_+="'$($snaps_)'"
         SNAPS_+=" "
     done < snap_install_list
 
 while read flatpaks_
     do 
-        FLATPAKS+="$flatpaks_"
+        FLATPAKS+=$flatpaks_
         FLATPAKS+=" "
     done < flatpak_install_list
 

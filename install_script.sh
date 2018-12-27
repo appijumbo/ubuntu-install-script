@@ -5,6 +5,9 @@ clear
 if [ ! -f install_report.sh ] 
     then 
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/report/install_report.sh
+        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/apt_install_list
+        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/flatpak_install_list
+        wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/snap_install_list
 fi
 
 sudo chmod +x install_report.sh

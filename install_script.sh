@@ -135,6 +135,13 @@ while read snaps
     do FLATPAKS+=$flatpaks_
     done < flatpak_install_list
 
+printf "APT_LIST -->\n"
+printf "${APT_LIST[*]}"
+printf "SNAPS_ -->\n"
+printf "${SNAPS_[*]}"
+printf "FLATPAKS -->\n"
+printf "${FLATPAKS[*]}"
+
 }
 
 

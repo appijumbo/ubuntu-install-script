@@ -26,4 +26,10 @@ sudo chmod +x installation_script.sh
 
 This will pull in and create other scripts and files as necessary.
 
-Before running it is worth choosing what you wish to install by first checking APT_LIST, SNAPS_, FLATPAKS_ arrays in the install_script (will convert these a file list in due course) and comment out any unrequired installs from the 'Main' list at the bottom of the install_script.
+Before running it is worth choosing what you wish to install by first checking
+
+* apt_flatpak_snap_install_list
+
+* the 'Main' list at the bottom of the install_script
+
+Comment out what is unrequired

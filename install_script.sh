@@ -108,12 +108,37 @@ update_n_refresh(){
 
 #  sudo apt install -y python python3 curl git ttf-mscorefonts-installer gufw kate yakuake tomboy virtualbox virtualbox-guest-additions-iso virtualbox-ext-pack falkon filelight redshift speedtest-cli inxi htop latte-dock simple-scan kdevelop mysql-workbench xsane kio-extras ffmpegthumbs kffmpegthumbnailer gnome-xcf-thumbnailer libopenraw7 libopenrawgnome7 gnome-raw-thumbnailer zsh fonts-powerline imagemagick chromium-browser
 
+read_from_install_file () {
+
+APT_LIST=()
+while read apts_
+    do APT_LIST+=$apts_
+    done < apt_install_list
+
+
+SNAPS_=()
+while read snaps
+    do SNAPS_+=$snaps_
+    done < snap_install_list
+
+
+FLATPAKS=()
+while read snaps
+    do FLATPAKS+=$flatpaks_
+    done < flatpak_install_list
+
+}
+
+
+read_from_install_file
+
+
+# APT_LIST=(python curl chromium-browser)
 
 apt_installs(){
 
     # check if reboot is required
-   
-    APT_LIST=(python curl chromium-browser)
+
         if [ -f $REBOOT ]
             then
                 reboot_me

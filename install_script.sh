@@ -8,6 +8,22 @@ if [ ! -f install_report.sh ]
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/apt_flatpak_snap_install_list
 fi
 
+# Ask if user wants to edit the Apt, Flatpak and Install list
+read -p "Do you want to edit the list of Apt, Flatpak and Snaps to install (enter 'y' or 'n' )"  edit_list
+if [ ($edit_list = "y") || ($edit_list = "yes") ]
+    then 
+        echo "OK , Please edit the list as you would like, then save and close"
+        nano apt_flatpak_snap_install_list
+fi
+
+# Ask if user wants to edit Main list of installs in install_script.sh
+read -p "Do you want to edit the main list of all installs at the end of this script (enter 'y' or 'n' )"  edit_list
+if [ ($edit_list = "y") || ($edit_list = "yes") ]
+    then 
+        echo "OK , Please go to 'Main' at the end of 'install_script.sh' , then save and close and retart"
+        exit
+fi
+
 sudo chmod +x install_report.sh
 source install_report.sh
 

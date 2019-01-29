@@ -31,6 +31,7 @@ zsh:apt
 fonts-powerline:apt
 imagemagick:apt
 chromium-browser:apt
+kubuntu-driver-manager:apt
 com.abisource.AbiWord:flatpak
 org.audacityteam.Audacity:flatpak
 org.kde.kdenlive:flatpak

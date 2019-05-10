@@ -666,7 +666,7 @@ alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
 alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
-alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
+alias updateme="sudo snap refresh && sudo flatpak update && sudo pkcon update && sudo youtube-dl -U"
 _EOF_
 
     bash_aliases_installed="yes"
@@ -674,7 +674,9 @@ _EOF_
     fi
 }
 
-
+# NOTE: NEED TO ADD MORE DESISION LOGIC HERE
+# For Ubuntu needs to be 'apt' not 'pckon'
+# alias updateme=sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U
 
 
 # PRINTER INSTALLATION - Brother DCPJ-140W 

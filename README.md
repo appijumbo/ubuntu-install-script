@@ -62,7 +62,7 @@ This holds various functions including
 The main script 'imports' the above two scripts via wget from github, then using the list and methods describes installs apps and sets up printers etc, alerting the user as it progresses. Exactly what is installed can easily be controlled by commenting out the install command from the main list at the end of the installation-script and editing the apt_flatpak_snap_install_list script.
 
 
-#### Future - A web GUI version ie. Node + Bash
+## Future - A web GUI version ie. Node + Bash
 Rather than having to edit a list of apps, an alternative approach is to create a GUI that provides checkboxes for the apps and contains the URL to the info on the app. This list/ database could be on a server so it could be up-dated, containing updated installation scripts for each app to be assembled into a complete downloadable script. Initially however this could just be a simple localhost server just allowing the basic apt_flatpak_snap_install_list to be edited. On installation the bash could ensure node and browser is installed first then open the browser eg. via bash eg 
 
 ``` 

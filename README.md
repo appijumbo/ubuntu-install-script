@@ -65,7 +65,10 @@ The main script 'imports' the above two scripts via wget from github, then using
 #### Future - A web GUI version ie. Node + Bash
 Rather than having to edit a list of apps, an alternative approach is to create a GUI that provides checkboxes for the apps and contains the URL to the info on the app. This list/ database could be on a server so it could be up-dated, containing updated installation scripts for each app to be assembled into a complete downloadable script. Initially however this could just be a simple localhost server just allowing the basic apt_flatpak_snap_install_list to be edited. On installation the bash could ensure node and browser is installed first then open the browser eg. via bash eg 
 
-``` xdg-open 'http://appijumbo/tomsInstallMix' ```
+``` 
+    xdg-open 'http://localhost:3000' 
+
+```
 
 and via say the node file system (fs), the desired apps to be installed would be checked and when ready a new 'apt_flatpak_snap_install_list script' file would be ceated using FS. 
 
@@ -79,7 +82,7 @@ Alternativley might be better long term to rewrite the bash to use a JSON format
     fs.writeFile('/foo/bar/apt_flatpak_snap_install_list.txt', list, (err) => {
         // If an error occurred, show it and return
         if(err) return console.error(` Error --> ${err}`);
-        // Successfully cretaed file
+        // Successfully created file
         })
 ```
 

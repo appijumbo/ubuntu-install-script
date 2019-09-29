@@ -22,6 +22,9 @@ cd ~/Downloads
 wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/master/install_script.sh 
 
 sudo chmod +x installation_script.sh
+
+./installation_script.sh
+
 ```
 
 This will pull in and create other scripts and files as necessary.
@@ -60,8 +63,27 @@ The main script 'imports' the above two scripts via wget from github, then using
 
 
 #### Future - A web GUI version ie. Node + Bash
-Rather than having to edit a list of apps, an alternative approach is to create a GUI that provides checkboxes for the apps and contains the URL to the info on the app. This could be via onlie so it could be up-dated or if wi-fi was unavailable (can happen with some Linux installation processes) switch to a localhost serving a local version. On installation the bash could then check node and browser is installed then open the browser eg. via bash` xdg-open 'http://localhost:3000' ` and via node file system (fs) access, a web app could write to the file list 'apt_flatpak_snap_install_list script' and 'install_script.sh' to add/remove desired components an execute the full instaltion.
+Rather than having to edit a list of apps, an alternative approach is to create a GUI that provides checkboxes for the apps and contains the URL to the info on the app. This list/ database could be on a server so it could be up-dated, containing updated installation scripts for each app to be assembled into a complete downloadable script. Initially however this could just be a simple localhost server just allowing the basic apt_flatpak_snap_install_list to be edited. On installation the bash could ensure node and browser is installed first then open the browser eg. via bash eg 
 
+``` xdg-open 'http://appijumbo/tomsInstallMix' ```
+
+and via say the node file system (fs), the desired apps to be installed would be checked and when ready a new 'apt_flatpak_snap_install_list script' file would be ceated using FS. 
+
+Need to use objects and JSON to write a file in CSV format, to be read by the bash. Currently the list uses ' : ' as delimeter not ' , ' but this can be easily changed. Possibly could use npm module csv-writer or fast-csv.
+
+Alternativley might be better long term to rewrite the bash to use a JSON format not CSV
+
+```
+    // get a JSON of the apt_flatpak_snap_install_list  list
+    
+    fs.writeFile('/foo/bar/apt_flatpak_snap_install_list.txt', list, (err) => {
+        // If an error occurred, show it and return
+        if(err) return console.error(` Error --> ${err}`);
+        // Successfully cretaed file
+        })
+```
+
+Once the file has written successfully, Node could change the status of a file (bash uses files as signals) and then the rest of the installation script should be run. Need to figure out how to get node and bash to 'drive' each other ie execute scripts from each other.
 
 
 

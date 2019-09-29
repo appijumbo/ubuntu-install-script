@@ -56,4 +56,14 @@ This holds various functions including
 
 
 #### install_script.sh
-The main script 'imports' the above two scripts via wget from github, then using the list and methods describes installs apps and sets up printers etc, alerting the user as it progresses. Exactly what is installed caqn easily be controlled by commenting out the install command from the main list at the end of the installation-script and editing the apt_flatpak_snap_install_list script.
+The main script 'imports' the above two scripts via wget from github, then using the list and methods describes installs apps and sets up printers etc, alerting the user as it progresses. Exactly what is installed can easily be controlled by commenting out the install command from the main list at the end of the installation-script and editing the apt_flatpak_snap_install_list script.
+
+
+#### Future - A web GUI version ie. Node + Bash
+Rather than having to edit a list of apps, an alternative approach is to create a GUI that provides checkboxes for the apps and contains the URL to the info on the app. This could be via onlie so it could be up-dated or if wi-fi was unavailable (can happen with some Linux installation processes) switch to a localhost serving a local version. On installation the bash could then check node and browser is installed then open the browser eg. via bash` xdg-open 'http://localhost:3000' ` and via node file system (fs) access, a web app could write to the file list 'apt_flatpak_snap_install_list script' and 'install_script.sh' to add/remove desired components an execute the full instaltion.
+
+
+
+
+
+

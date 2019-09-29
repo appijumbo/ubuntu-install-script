@@ -8,6 +8,22 @@ if [ ! -f install_report.sh ]
         wget https://raw.githubusercontent.com/appijumbo/ubuntu-install-script/installFromFiles/apt_flatpak_snap_install_list
 fi
 
+# Ask if user wants to edit the Apt, Flatpak and Install list
+read -p "Do you want to edit the list of Apt, Flatpak and Snaps to install (enter 'y' or 'n' )"  edit_list
+if [ ($edit_list = "y") || ($edit_list = "yes") ]
+    then 
+        echo "OK , Please edit the list as you would like, then save and close"
+        nano apt_flatpak_snap_install_list
+fi
+
+# Ask if user wants to edit Main list of installs in install_script.sh
+read -p "Do you want to edit the main list of all installs at the end of this script (enter 'y' or 'n' )"  edit_list
+if [ ($edit_list = "y") || ($edit_list = "yes") ]
+    then 
+        echo "OK , Please go to 'Main' at the end of 'install_script.sh' , then save and close and retart"
+        exit
+fi
+
 sudo chmod +x install_report.sh
 source install_report.sh
 
@@ -650,7 +666,7 @@ alias cdF_="cd /media/tomdom/F_Drive"
 alias cdcode="cd '/media/tomdom/F_Drive/My Desktop/CODE'"
 alias cdlinux="cd '/media/tomdom/F_Drive/My Documents/HOBBIES & INTERESTS/LINUX'"
 alias cddrama="cd '/media/tomdom/F_Drive/My Videos/Drama'"
-alias updateme="sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U"
+alias updateme="sudo snap refresh && sudo flatpak update && sudo pkcon update && sudo youtube-dl -U"
 _EOF_
 
     bash_aliases_installed="yes"
@@ -658,7 +674,9 @@ _EOF_
     fi
 }
 
-
+# NOTE: NEED TO ADD MORE DESISION LOGIC HERE
+# For Ubuntu needs to be 'apt' not 'pckon'
+# alias updateme=sudo apt update && sudo apt upgrade && sudo snap refresh && flatpak update && sudo youtube-dl -U
 
 
 # PRINTER INSTALLATION - Brother DCPJ-140W 
